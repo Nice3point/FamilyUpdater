@@ -1,0 +1,158 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+    <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')"/>
+    <PropertyGroup>
+        <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+        <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+        <ProjectGuid>{0C43274F-1BBE-4125-9006-6B408066EDEE}</ProjectGuid>
+        <OutputType>Library</OutputType>
+        <AppDesignerFolder>Properties</AppDesignerFolder>
+        <RootNamespace>FamilyUpdater</RootNamespace>
+        <AssemblyName>FamilyUpdater</AssemblyName>
+        <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
+        <FileAlignment>512</FileAlignment>
+        <LangVersion>9</LangVersion>
+    </PropertyGroup>
+    <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug R20|AnyCPU' ">
+        <DebugSymbols>true</DebugSymbols>
+        <DebugType>full</DebugType>
+        <Optimize>false</Optimize>
+        <DefineConstants>DEBUG;TRACE;R20</DefineConstants>
+        <ErrorReport>prompt</ErrorReport>
+        <WarningLevel>4</WarningLevel>
+        <OutputPath>bin\Debug R20\</OutputPath>
+        <PlatformTarget>x64</PlatformTarget>
+    </PropertyGroup>
+    <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release R20|AnyCPU' ">
+        <DebugType>none</DebugType>
+        <Optimize>true</Optimize>
+        <ErrorReport>prompt</ErrorReport>
+        <WarningLevel>4</WarningLevel>
+        <OutputPath>bin\Release R20\</OutputPath>
+        <PlatformTarget>x64</PlatformTarget>
+        <DefineConstants>R20</DefineConstants>
+    </PropertyGroup>
+    <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug R21|AnyCPU' ">
+        <DebugSymbols>true</DebugSymbols>
+        <DebugType>full</DebugType>
+        <Optimize>false</Optimize>
+        <DefineConstants>DEBUG;TRACE;R21</DefineConstants>
+        <ErrorReport>prompt</ErrorReport>
+        <WarningLevel>4</WarningLevel>
+        <OutputPath>bin\Debug R21\</OutputPath>
+        <PlatformTarget>x64</PlatformTarget>
+    </PropertyGroup>
+    <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release R21|AnyCPU' ">
+        <DebugType>none</DebugType>
+        <Optimize>true</Optimize>
+        <ErrorReport>prompt</ErrorReport>
+        <WarningLevel>4</WarningLevel>
+        <OutputPath>bin\Release R21\</OutputPath>
+        <PlatformTarget>x64</PlatformTarget>
+        <DefineConstants>R21</DefineConstants>
+    </PropertyGroup>
+    <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug R22|AnyCPU' ">
+        <DebugSymbols>true</DebugSymbols>
+        <DebugType>full</DebugType>
+        <Optimize>false</Optimize>
+        <DefineConstants>DEBUG;TRACE;R22</DefineConstants>
+        <ErrorReport>prompt</ErrorReport>
+        <WarningLevel>4</WarningLevel>
+        <OutputPath>bin\Debug R22\</OutputPath>
+        <PlatformTarget>x64</PlatformTarget>
+    </PropertyGroup>
+    <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release R22|AnyCPU' ">
+        <DebugType>none</DebugType>
+        <Optimize>true</Optimize>
+        <ErrorReport>prompt</ErrorReport>
+        <WarningLevel>4</WarningLevel>
+        <OutputPath>bin\Release R22\</OutputPath>
+        <PlatformTarget>x64</PlatformTarget>
+        <DefineConstants>R22</DefineConstants>
+    </PropertyGroup>
+    <Choose>
+        <When Condition="$(Configuration.Contains('R20'))">
+            <PropertyGroup>
+                <LibDirectory>C:\Program Files\Autodesk\Revit 2020</LibDirectory>
+            </PropertyGroup>
+        </When>
+        <When Condition="$(Configuration.Contains('R21'))">
+            <PropertyGroup>
+                <LibDirectory>C:\Program Files\Autodesk\Revit 2021</LibDirectory>
+            </PropertyGroup>
+        </When>
+        <When Condition="$(Configuration.Contains('R22'))">
+            <PropertyGroup>
+                <LibDirectory>C:\Program Files\Autodesk\Revit 2022</LibDirectory>
+            </PropertyGroup>
+        </When>
+    </Choose>
+    <ItemGroup>
+        <Reference Include="$(LibDirectory)\RevitAPI.dll">
+            <HintPath>$(LibDirectory)\RevitAPI.dll</HintPath>
+            <Private>False</Private>
+        </Reference>
+        <Reference Include="RevitAPIUI">
+            <HintPath>$(LibDirectory)\RevitAPIUI.dll</HintPath>
+            <Private>False</Private>
+        </Reference>
+        <Reference Include="AdWindows">
+            <HintPath>$(LibDirectory)\AdWindows.dll</HintPath>
+            <Private>False</Private>
+        </Reference>
+        <Reference Include="System"/>
+        <Reference Include="System.Core"/>
+        <Reference Include="System.Data"/>
+        <Reference Include="System.Xml"/>
+        <Reference Include="PresentationFramework"/>
+    </ItemGroup>
+    <ItemGroup>
+        <PackageReference Include="ILRepack.Lib.MSBuild.Task" Version="2.0.18.2"/>
+        <PackageReference Include="Microsoft-WindowsAPICodePack-Shell" Version="1.1.4"/>
+        <PackageReference Include="WixSharp" Version="1.17.0"/>
+        <PackageReference Include="WixSharp.wix.bin" Version="3.11.2"/>
+    </ItemGroup>
+    <ItemGroup>
+        <Compile Include="FileFormats.cs"/>
+        <Compile Include="Installer.cs"/>
+        <Compile Include="Logger.cs"/>
+        <Compile Include="Properties\AssemblyInfo.cs"/>
+        <Compile Include="Updater.cs"/>
+    </ItemGroup>
+    <ItemGroup>
+        <None Include="FamilyUpdater.addin">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </None>
+    </ItemGroup>
+
+    <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets"/>
+
+    <PropertyGroup>
+        <MergedDirectory>$(TargetDir)Merged assembly</MergedDirectory>
+        <AddinDir>$(BaseOutputPath)Addin\</AddinDir>
+        <AddinDllDir>$(AddinDir)$(AssemblyName)\</AddinDllDir>
+    </PropertyGroup>
+    <ItemGroup>
+        <Addin Include="$(TargetDir)\*.addin"/>
+        <AddinDll Include="$(MergedDirectory)\*.dll"/>
+        <OutDir Include="$(AddinDir)**\*.*"/>
+    </ItemGroup>
+    <ItemGroup>
+        <MergingAssemblies Include="$(TargetDir)$(AssemblyName).dll"/>
+        <MergingAssemblies Include="$(TargetDir)Microsoft.WindowsAPICodePack.dll"/>
+        <MergingAssemblies Include="$(TargetDir)Microsoft.WindowsAPICodePack.Shell.dll"/>
+    </ItemGroup>
+    <Target Name="AfterBuild">
+        <RemoveDir Directories="$(AddinDir)"/>
+        <Copy SourceFiles="@(Addin)" DestinationFolder="$(AddinDir)"/>
+        <MakeDir Directories="$(MergedDirectory)" ContinueOnError="true"/>
+        <CallTarget Targets="MergeAssemblies"/>
+        <Copy SourceFiles="@(AddinDll)" DestinationFolder="$(AddinDllDir)"/>
+        <Copy SourceFiles="@(OutDir)" DestinationFolder="$(AppData)\Autodesk\Revit\Addins\2020\%(RecursiveDir)" Condition="$(Configuration.Contains('R20'))" OverwriteReadOnlyFiles="true"/>
+        <Copy SourceFiles="@(OutDir)" DestinationFolder="$(AppData)\Autodesk\Revit\Addins\2021\%(RecursiveDir)" Condition="$(Configuration.Contains('R21'))" OverwriteReadOnlyFiles="true"/>
+        <Copy SourceFiles="@(OutDir)" DestinationFolder="$(AppData)\Autodesk\Revit\Addins\2022\%(RecursiveDir)" Condition="$(Configuration.Contains('R22'))" OverwriteReadOnlyFiles="true"/>
+    </Target>
+    <Target Name="MergeAssemblies">
+        <ILRepack TargetKind="Dll" InputAssemblies="@(MergingAssemblies)" OutputFile="$(MergedDirectory)\$(AssemblyName).dll" LibraryPath="$(LibDirectory)"/>
+    </Target>
+</Project>

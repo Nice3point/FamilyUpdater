@@ -1,0 +1,9 @@
+*.idea/
+!*.idea/.idea.WallPanelGenerator/.idea/runConfigurations/
+*.vs/
+*obj/
+*bin/
+*.dwl*
+*.DotSettings*
+*.000*.rfa
+*.000*.rvt
