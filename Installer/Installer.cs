@@ -3,19 +3,21 @@ using WixSharp;
 using WixSharp.CommonTasks;
 using WixSharp.Controls;
 
-namespace FamilyUpdater
+namespace Installer
 {
-    public static class Installer
+    public static class WixInstaller
     {
         private const string InstallationDir = @"%AppDataFolder%\Autodesk\Revit\Addins\";
 
-        public static void Install()
+        public static void Main(string[] args)
         {
-            const string fileMask = @"Addin\*.*";
+            var binFolder = args[0];
+            var fileMask = $@"{binFolder}\Addin\*.*";
             var project = new Project
             {
                 Name         = "Family updater",
                 OutFileName  = "FamilyUpdater",
+                OutDir       = "output",
                 Version      = new Version(1, 0),
                 Platform     = Platform.x64,
                 UI           = WUI.WixUI_InstallDir,

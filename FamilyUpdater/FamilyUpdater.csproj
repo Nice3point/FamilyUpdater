@@ -11,88 +11,28 @@
         <FileAlignment>512</FileAlignment>
         <LangVersion>9</LangVersion>
     </PropertyGroup>
-    <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug R20|AnyCPU' ">
-        <DebugSymbols>true</DebugSymbols>
-        <DebugType>full</DebugType>
-        <Optimize>false</Optimize>
-        <DefineConstants>DEBUG;TRACE;R20</DefineConstants>
-        <ErrorReport>prompt</ErrorReport>
-        <WarningLevel>4</WarningLevel>
-        <OutputPath>bin\Debug R20\</OutputPath>
-        <PlatformTarget>x64</PlatformTarget>
-    </PropertyGroup>
-    <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release R20|AnyCPU' ">
+    <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
         <DebugType>none</DebugType>
         <Optimize>true</Optimize>
         <ErrorReport>prompt</ErrorReport>
         <WarningLevel>4</WarningLevel>
-        <OutputPath>bin\Release R20\</OutputPath>
-        <PlatformTarget>x64</PlatformTarget>
-        <DefineConstants>R20</DefineConstants>
+        <OutputPath>bin\Release\</OutputPath>
     </PropertyGroup>
-    <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug R21|AnyCPU' ">
+    <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
         <DebugSymbols>true</DebugSymbols>
         <DebugType>full</DebugType>
         <Optimize>false</Optimize>
-        <DefineConstants>DEBUG;TRACE;R21</DefineConstants>
+        <DefineConstants>DEBUG;TRACE</DefineConstants>
         <ErrorReport>prompt</ErrorReport>
         <WarningLevel>4</WarningLevel>
-        <OutputPath>bin\Debug R21\</OutputPath>
-        <PlatformTarget>x64</PlatformTarget>
-    </PropertyGroup>
-    <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release R21|AnyCPU' ">
-        <DebugType>none</DebugType>
-        <Optimize>true</Optimize>
-        <ErrorReport>prompt</ErrorReport>
-        <WarningLevel>4</WarningLevel>
-        <OutputPath>bin\Release R21\</OutputPath>
-        <PlatformTarget>x64</PlatformTarget>
-        <DefineConstants>R21</DefineConstants>
-    </PropertyGroup>
-    <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug R22|AnyCPU' ">
-        <DebugSymbols>true</DebugSymbols>
-        <DebugType>full</DebugType>
-        <Optimize>false</Optimize>
-        <DefineConstants>DEBUG;TRACE;R22</DefineConstants>
-        <ErrorReport>prompt</ErrorReport>
-        <WarningLevel>4</WarningLevel>
-        <OutputPath>bin\Debug R22\</OutputPath>
-        <PlatformTarget>x64</PlatformTarget>
-    </PropertyGroup>
-    <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release R22|AnyCPU' ">
-        <DebugType>none</DebugType>
-        <Optimize>true</Optimize>
-        <ErrorReport>prompt</ErrorReport>
-        <WarningLevel>4</WarningLevel>
-        <OutputPath>bin\Release R22\</OutputPath>
-        <PlatformTarget>x64</PlatformTarget>
-        <DefineConstants>R22</DefineConstants>
+        <OutputPath>bin\Debug\</OutputPath>
     </PropertyGroup>
     <ItemGroup>
         <PackageReference Include="ILRepack.Lib.MSBuild.Task" Version="2.0.18.2"/>
         <PackageReference Include="Microsoft-WindowsAPICodePack-Shell" Version="1.1.4"/>
-        <PackageReference Include="WixSharp" Version="1.18.1"/>
-        <PackageReference Include="WixSharp.wix.bin" Version="3.11.2"/>
     </ItemGroup>
-    <Choose>
-        <When Condition="$(Configuration.Contains('R20'))">
-            <PropertyGroup>
-                <RevitVersion>2020</RevitVersion>
-            </PropertyGroup>
-        </When>
-        <When Condition="$(Configuration.Contains('R21'))">
-            <PropertyGroup>
-                <RevitVersion>2021</RevitVersion>
-            </PropertyGroup>
-        </When>
-        <When Condition="$(Configuration.Contains('R22'))">
-            <PropertyGroup>
-                <RevitVersion>2022</RevitVersion>
-            </PropertyGroup>
-        </When>
-    </Choose>
     <PropertyGroup>
-        <RevitLibPath>C:\Program Files\Autodesk\Revit $(RevitVersion)</RevitLibPath>
+        <RevitLibPath>C:\Program Files\Autodesk\Revit 2022</RevitLibPath>
     </PropertyGroup>
     <ItemGroup>
         <Reference Include="$(RevitLibPath)\RevitAPI.dll">
@@ -121,7 +61,6 @@
     </ItemGroup>
     <ItemGroup>
         <Compile Include="FileFormats.cs"/>
-        <Compile Include="Installer.cs"/>
         <Compile Include="Logger.cs"/>
         <Compile Include="Properties\AssemblyInfo.cs"/>
         <Compile Include="Updater.cs"/>
@@ -130,7 +69,7 @@
     <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets"/>
 
     <PropertyGroup>
-        <AddinDir>bin\AddIn $(RevitVersion)\</AddinDir>
+        <AddinDir>bin\AddIn\</AddinDir>
         <MergedDir>$(TargetDir)Merged assembly\</MergedDir>
         <OutAddinDir>$(AddinDir)$(AssemblyName)\</OutAddinDir>
     </PropertyGroup>
@@ -140,6 +79,9 @@
         <AddinDll Include="$(TargetDir)Microsoft.WindowsAPICodePack.Shell.dll"/>
         <!--        Add DLLs to output folder or for merging below-->
         <!--        <AddinDll Include="$(TargetDir)Simple.dll" />-->
+    </ItemGroup>
+    <ItemGroup>
+        <Folder Include="bin"/>
     </ItemGroup>
     <Target Name="AfterBuild">
         <CallTarget Condition="$(Configuration.Contains('Debug'))" Targets="DebugAfterBuild">

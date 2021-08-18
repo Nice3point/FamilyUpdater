@@ -38,13 +38,13 @@ namespace FamilyUpdater
                 foreach (var file in files)
                     try
                     {
-                        var fileName    = Path.GetFileName(file);
-                        var path        = Path.GetDirectoryName(file);
+                        var fileName = Path.GetFileName(file);
+                        var path = Path.GetDirectoryName(file);
                         var savedFolder = Path.Combine(path!, commandData.Application.Application.VersionNumber);
-                        var savedFile   = Path.Combine(savedFolder, fileName);
-                        var document    = commandData.Application.Application.OpenDocumentFile(file);
+                        var savedFile = Path.Combine(savedFolder, fileName);
+                        var document = commandData.Application.Application.OpenDocumentFile(file);
 
-                        var saveAsOptions = new SaveAsOptions {OverwriteExistingFile = true};
+                        var saveAsOptions = new SaveAsOptions { OverwriteExistingFile = true };
                         if (!Directory.Exists(savedFolder)) Directory.CreateDirectory(savedFolder);
                         document.SaveAs(savedFile, saveAsOptions);
                     }
