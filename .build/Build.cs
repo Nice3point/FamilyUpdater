@@ -17,7 +17,6 @@ using static Nuke.Common.Tools.MSBuild.MSBuildTasks;
 // [AzurePipelines(AzurePipelinesImage.WindowsLatest, InvokedTargets = new[] { nameof(InitializeBuilder) })]
 [GitHubActions("CreatePackage",
     GitHubActionsImage.WindowsLatest,
-    InvokedTargets = new[] { nameof(InitializeBuilder) },
     OnPullRequestBranches = new[] { "main" })]
 class Build : NukeBuild
 {

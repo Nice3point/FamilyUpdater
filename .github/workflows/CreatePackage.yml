@@ -34,5 +34,5 @@ jobs:
             .nuke/temp
             ~/.nuget/packages
           key: ${{ runner.os }}-${{ hashFiles('**/global.json', '**/*.csproj') }}
-      - name: Run './.build/build.cmd InitializeBuilder'
-        run: ./.build/build.cmd InitializeBuilder
+      - name: Run './.build/build.cmd '
+        run: ./.build/build.cmd 
