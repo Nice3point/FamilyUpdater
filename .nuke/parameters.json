@@ -1,8 +1,5 @@
 {
   "$schema": "./build.schema.json",
   "Solution": "FamilyUpdater.sln",
-  "Verbosity": "Minimal",
-  "Skip": [
-    "CreateBundle"
-  ]
+  "Verbosity": "Minimal"
 }

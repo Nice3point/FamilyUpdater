@@ -6,24 +6,44 @@ using System.IO.Compression;
 using System.Linq;
 using System.Text.RegularExpressions;
 using Nuke.Common;
+using Nuke.Common.CI.AzurePipelines;
 using Nuke.Common.Execution;
+using Nuke.Common.IO;
 using Nuke.Common.ProjectModel;
 using Nuke.Common.Tools.MSBuild;
 using static Nuke.Common.Tools.MSBuild.MSBuildTasks;
 
 [CheckBuildProjectConfigurations]
+[UnsetVisualStudioEnvironmentVariables]
+[AzurePipelines(AzurePipelinesImage.WindowsLatest, InvokedTargets = new[] { nameof(InitializeBuilder) })]
 class Build : NukeBuild
 {
-    const string ProjectName = "FamilyUpdater";
-    const string InstallerName = "Installer";
-
     [Solution] readonly Solution Solution;
-    string _outputDirectory;
+    AbsolutePath BundleDirectory;
+    ProjectInfo InstallerInfo;
+    AbsolutePath OutputDirectory;
 
-    Target Cleaning => _ => _
+    ProjectInfo ProjectInfo;
+
+    Target InitializeBuilder => _ => _
         .Executes(() =>
         {
-            if (!Directory.Exists(OutputDirectory)) return;
+            InstallerInfo   = new ProjectInfo(Solution, "Installer");
+            ProjectInfo     = new ProjectInfo(Solution, "FamilyUpdater");
+            OutputDirectory = RootDirectory / "output";
+            BundleDirectory = OutputDirectory / $"{ProjectInfo.ProjectName}.bundle";
+        });
+
+    Target Cleaning => _ => _
+        .TriggeredBy(InitializeBuilder)
+        .Executes(() =>
+        {
+            if (!Directory.Exists(OutputDirectory))
+            {
+                Directory.CreateDirectory(OutputDirectory);
+                return;
+            }
+
             var directoryInfo = new DirectoryInfo(OutputDirectory);
             foreach (var file in directoryInfo.GetFiles()) file.Delete();
             foreach (var dir in directoryInfo.GetDirectories()) dir.Delete(true);
@@ -35,7 +55,6 @@ class Build : NukeBuild
         {
             var releaseConfigurations = GetReleaseConfigurations();
             if (releaseConfigurations.Count == 0) throw new Exception("There are no configurations in the project.");
-
             foreach (var configuration in releaseConfigurations) BuildProject(configuration);
         });
 
@@ -43,11 +62,9 @@ class Build : NukeBuild
         .TriggeredBy(Compile)
         .Executes(() =>
         {
-            var installerExe = GetExeDirectory(InstallerName);
-            var projectDirectory = GetBinDirectory(ProjectName);
             var proc = new Process();
-            proc.StartInfo.FileName  = installerExe;
-            proc.StartInfo.Arguments = $"\"{projectDirectory}\"";
+            proc.StartInfo.FileName  = InstallerInfo.ExecutableFile;
+            proc.StartInfo.Arguments = $"\"{ProjectInfo.BinDirectory}\"";
             proc.Start();
         });
 
@@ -55,16 +72,12 @@ class Build : NukeBuild
         .TriggeredBy(Compile)
         .Executes(() =>
         {
-            var projectDirectory = GetBinDirectory(ProjectName);
-            var addInsDirectory = new DirectoryInfo(projectDirectory).GetDirectories()
+            var addInsDirectory = new DirectoryInfo(ProjectInfo.BinDirectory).GetDirectories()
                 .Where(dir => dir.Name.StartsWith("AddIn"))
                 .ToList();
 
             if (addInsDirectory.Count == 0) throw new Exception("There are no packaged assemblies in the project. Try to build the project again.");
-
-            var bundleDirectory = GetBundleDirectory();
-            var contentDirectory = Path.Combine(bundleDirectory, "Contents");
-
+            var contentDirectory = BundleDirectory / "Contents";
             var versionPattern = new Regex(@"\d+");
             foreach (var directoryInfo in addInsDirectory)
             {
@@ -75,7 +88,7 @@ class Build : NukeBuild
                     continue;
                 }
 
-                var buildDirectory = Path.Combine(contentDirectory, version);
+                var buildDirectory = contentDirectory / version;
                 CopyFilesContent(directoryInfo.FullName, buildDirectory);
             }
         });
@@ -84,21 +97,11 @@ class Build : NukeBuild
         .TriggeredBy(CreateBundle)
         .Executes(() =>
         {
-            var bundleDirectory = GetBundleDirectory();
-            var archiveName = $"{bundleDirectory}.zip";
-            ZipFile.CreateFromDirectory(bundleDirectory, archiveName);
+            var archiveName = $"{BundleDirectory}.zip";
+            ZipFile.CreateFromDirectory(BundleDirectory, archiveName);
         });
 
-    string OutputDirectory => _outputDirectory ??= Path.Combine(Solution.Directory!, "output");
-
-    public static int Main() => Execute<Build>(x => x.Cleaning);
-
-    string GetBundleDirectory()
-    {
-        var bundleName = $"{ProjectName}.bundle";
-        var bundleDirectory = Path.Combine(OutputDirectory, bundleName);
-        return bundleDirectory;
-    }
+    public static int Main() => Execute<Build>(x => x.InitializeBuilder);
 
     List<string> GetReleaseConfigurations() =>
         Solution.Configurations
@@ -113,20 +116,6 @@ class Build : NukeBuild
             Directory.CreateDirectory(dirPath.Replace(sourcePath, targetPath));
         foreach (var newPath in Directory.GetFiles(sourcePath, "*.*", SearchOption.AllDirectories))
             File.Copy(newPath, newPath.Replace(sourcePath, targetPath), true);
-    }
-
-    string GetBinDirectory(string projectName)
-    {
-        var project = Solution.GetProject(projectName);
-        if (project == null) throw new NullReferenceException($"Cannon find project \"{projectName}\"");
-        return Path.Join(project.Directory, "bin");
-    }
-
-    string GetExeDirectory(string projectName)
-    {
-        var binDirectory = GetBinDirectory(projectName);
-        var releaseDirectory = Path.Join(binDirectory, "Release");
-        return Path.Join(releaseDirectory, $"{projectName}.exe");
     }
 
     void BuildProject(string configuration) =>

@@ -67,6 +67,7 @@
               "Compile",
               "CreateBundle",
               "CreateInstaller",
+              "InitializeBuilder",
               "ZipBundle"
             ]
           }
@@ -85,6 +86,7 @@
               "Compile",
               "CreateBundle",
               "CreateInstaller",
+              "InitializeBuilder",
               "ZipBundle"
             ]
           }
