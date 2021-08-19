@@ -1,6 +1,9 @@
-name: CreatePackageDuckGit
+name: CreatePackage
 
 on:
+  push:
+    branches:
+      - main
   pull_request:
     branches:
       - main
