@@ -118,9 +118,10 @@ partial class Build : NukeBuild
 
     void BuildProject(string configuration) =>
         MSBuild(s => s
-            .SetTargetPath(Solution)
-            .SetConfiguration(configuration)
-            .SetMSBuildPlatform(MSBuildPlatform.x64)
-            .SetMaxCpuCount(Environment.ProcessorCount)
-            .DisableNodeReuse());
+                .SetTargetPath(Solution)
+                .SetConfiguration(configuration)
+            // .SetMSBuildPlatform(MSBuildPlatform.x64)
+            // .SetMaxCpuCount(Environment.ProcessorCount)
+            // .DisableNodeReuse()
+        );
 }
