@@ -47,8 +47,17 @@ partial class Build : NukeBuild
             foreach (var dir in directoryInfo.GetDirectories()) dir.Delete(true);
         });
 
-    Target Compile => _ => _
+    Target Restore => _ => _
         .TriggeredBy(Cleaning)
+        .Executes(() =>
+        {
+            MSBuild(s => s
+                .SetTargetPath(Solution)
+                .SetTargets("Restore"));
+        });
+
+    Target Compile => _ => _
+        .TriggeredBy(Restore)
         .Executes(() =>
         {
             var releaseConfigurations = GetReleaseConfigurations();
@@ -119,6 +128,7 @@ partial class Build : NukeBuild
     void BuildProject(string configuration) =>
         MSBuild(s => s
                 .SetTargetPath(Solution)
+                .SetTargets("Rebuild")
                 .SetConfiguration(configuration)
             // .SetMSBuildPlatform(MSBuildPlatform.x64)
             // .SetMaxCpuCount(Environment.ProcessorCount)
