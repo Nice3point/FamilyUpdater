@@ -17,6 +17,7 @@
         <ErrorReport>prompt</ErrorReport>
         <WarningLevel>4</WarningLevel>
         <OutputPath>bin\Release\</OutputPath>
+        <PlatformTarget>x64</PlatformTarget>
     </PropertyGroup>
     <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
         <DebugSymbols>true</DebugSymbols>
@@ -26,12 +27,12 @@
         <ErrorReport>prompt</ErrorReport>
         <WarningLevel>4</WarningLevel>
         <OutputPath>bin\Debug\</OutputPath>
+        <PlatformTarget>x64</PlatformTarget>
     </PropertyGroup>
     <ItemGroup>
         <PackageReference Include="ILRepack.Lib.MSBuild.Task" Version="2.0.18.2"/>
         <PackageReference Include="Microsoft-WindowsAPICodePack-Shell" Version="1.1.4"/>
         <PackageReference Include="Revit_API_x64" Version="2022.0.0"/>
-        <PackageReference Include="PresentationFramework" Version="4.6.0"/>
     </ItemGroup>
     <PropertyGroup>
         <RevitLibPath>C:\Program Files\Autodesk\Revit 2022</RevitLibPath>
@@ -41,6 +42,7 @@
         <Reference Include="System.Core"/>
         <Reference Include="System.Data"/>
         <Reference Include="System.Xml"/>
+        <Reference Include="PresentationFramework"/>
     </ItemGroup>
 
     <ItemGroup>
@@ -82,19 +84,19 @@
         <RemoveDir Directories="$(AddinDir)"/>
         <Copy SourceFiles="$(TargetDir)$(AssemblyName).addin" DestinationFolder="$(AddinDir)"/>
         <Copy SourceFiles="@(OutDll)" DestinationFolder="$(OutAddinDir)"/>
-        <CallTarget Targets="CopyToRevitFolder"/>
     </Target>
     <Target Name="DebugAfterBuild" Outputs="@(OutDll)">
         <ItemGroup>
             <OutDll Include="@(AddinDll)"/>
         </ItemGroup>
+        <CallTarget Targets="CopyToRevitFolder"/>
     </Target>
     <Target Name="ReleaseAfterBuild" Outputs="@(OutDll)">
         <ItemGroup>
             <OutDll Include="$(MergedDir)*.dll"/>
         </ItemGroup>
         <MakeDir Directories="$(MergedDir)" ContinueOnError="true"/>
-        <ILRepack TargetKind="Dll" LogFile="$(TargetDir)\ILRepackLog.txt" InputAssemblies="@(AddinDll)" OutputFile="$(MergedDir)$(AssemblyName).dll" LibraryPath="$(RevitLibPath)"/>
+        <ILRepack TargetKind="Dll" LogFile="$(TargetDir)\ILRepackLog.txt" InputAssemblies="@(AddinDll)" OutputFile="$(MergedDir)$(AssemblyName).dll" LibraryPath="$(TargetDir)"/>
     </Target>
     <Target Name="CopyToRevitFolder">
         <ItemGroup>
