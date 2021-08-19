@@ -17,14 +17,16 @@ using static Nuke.Common.Tools.MSBuild.MSBuildTasks;
 // [AzurePipelines(AzurePipelinesImage.WindowsLatest, InvokedTargets = new[] { nameof(InitializeBuilder) })]
 [GitHubActions("CreatePackage",
     GitHubActionsImage.WindowsLatest,
-    OnPullRequestBranches = new[] { "main" })]
+    PublishArtifacts = false,
+    AutoGenerate = true,
+    OnPullRequestBranches = new[] { "main" },
+    OnPushBranches = new[] { "main" })]
 class Build : NukeBuild
 {
     [Solution] readonly Solution Solution;
     AbsolutePath BundleDirectory;
     ProjectInfo InstallerInfo;
     AbsolutePath OutputDirectory;
-
     ProjectInfo ProjectInfo;
 
     Target InitializeBuilder => _ => _
