@@ -2,7 +2,6 @@
 
 [GitHubActions("CreatePackage",
     GitHubActionsImage.WindowsLatest,
-    AutoGenerate = true,
     OnPullRequestBranches = new[] { "main" })]
 partial class Build
 {

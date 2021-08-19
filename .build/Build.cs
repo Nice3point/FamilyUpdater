@@ -13,6 +13,7 @@ using Nuke.Common.Tools.MSBuild;
 using static Nuke.Common.Tools.MSBuild.MSBuildTasks;
 
 [CheckBuildProjectConfigurations]
+[UnsetVisualStudioEnvironmentVariables]
 // [AzurePipelines(AzurePipelinesImage.WindowsLatest, InvokedTargets = new[] { nameof(InitializeBuilder) })]
 partial class Build : NukeBuild
 {
