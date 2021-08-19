@@ -1,4 +1,4 @@
-name: CreatePackageDuckGit
+name: CreatePackage2
 
 on:
   pull_request:
