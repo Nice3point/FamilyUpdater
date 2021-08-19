@@ -30,23 +30,12 @@
     <ItemGroup>
         <PackageReference Include="ILRepack.Lib.MSBuild.Task" Version="2.0.18.2"/>
         <PackageReference Include="Microsoft-WindowsAPICodePack-Shell" Version="1.1.4"/>
+        <PackageReference Include="Revit_API_x64" Version="2022.0.0"/>
     </ItemGroup>
     <PropertyGroup>
         <RevitLibPath>C:\Program Files\Autodesk\Revit 2022</RevitLibPath>
     </PropertyGroup>
     <ItemGroup>
-        <Reference Include="$(RevitLibPath)\RevitAPI.dll">
-            <HintPath>$(RevitLibPath)\RevitAPI.dll</HintPath>
-            <Private>False</Private>
-        </Reference>
-        <Reference Include="RevitAPIUI">
-            <HintPath>$(RevitLibPath)\RevitAPIUI.dll</HintPath>
-            <Private>False</Private>
-        </Reference>
-        <Reference Include="AdWindows">
-            <HintPath>$(RevitLibPath)\AdWindows.dll</HintPath>
-            <Private>False</Private>
-        </Reference>
         <Reference Include="System"/>
         <Reference Include="System.Core"/>
         <Reference Include="System.Data"/>
