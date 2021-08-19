@@ -6,7 +6,6 @@ using System.IO.Compression;
 using System.Linq;
 using System.Text.RegularExpressions;
 using Nuke.Common;
-using Nuke.Common.CI.GitHubActions;
 using Nuke.Common.Execution;
 using Nuke.Common.IO;
 using Nuke.Common.ProjectModel;
@@ -15,13 +14,7 @@ using static Nuke.Common.Tools.MSBuild.MSBuildTasks;
 
 [CheckBuildProjectConfigurations]
 // [AzurePipelines(AzurePipelinesImage.WindowsLatest, InvokedTargets = new[] { nameof(InitializeBuilder) })]
-[GitHubActions("CreatePackage",
-    GitHubActionsImage.WindowsLatest,
-    PublishArtifacts = false,
-    AutoGenerate = true,
-    OnPullRequestBranches = new[] { "main" },
-    OnPushBranches = new[] { "main" })]
-class Build : NukeBuild
+partial class Build : NukeBuild
 {
     [Solution] readonly Solution Solution;
     AbsolutePath BundleDirectory;
