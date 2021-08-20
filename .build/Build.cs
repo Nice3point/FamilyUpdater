@@ -53,29 +53,30 @@ partial class Build : NukeBuild
         .TriggeredBy(Restore)
         .Executes(() =>
         {
-            if (!Directory.Exists(OutputDirectory))
+            if (Directory.Exists(OutputDirectory))
+            {
+                var directoryInfo = new DirectoryInfo(OutputDirectory);
+                foreach (var file in directoryInfo.GetFiles()) file.Delete();
+                foreach (var dir in directoryInfo.GetDirectories()) dir.Delete(true);
+            }
+            else
             {
                 Directory.CreateDirectory(OutputDirectory);
-                return;
             }
 
-            var directoryInfo = new DirectoryInfo(OutputDirectory);
-            foreach (var file in directoryInfo.GetFiles()) file.Delete();
-            foreach (var dir in directoryInfo.GetDirectories()) dir.Delete(true);
+            var wixTargetPath = Environment.ExpandEnvironmentVariables(WixTargetPath);
+            var ilTargetPath = Environment.ExpandEnvironmentVariables(IlRepackTargetPath);
 
-            var targetPath = Environment.ExpandEnvironmentVariables(WixTargetPath);
-            var ilRepackPath = Environment.ExpandEnvironmentVariables(IlRepackTargetPath);
-
-            Logger.Warn("WIX Path: " + targetPath);
-            if (File.Exists(targetPath))
+            Logger.Warn("WIX Path: " + wixTargetPath);
+            if (File.Exists(wixTargetPath))
             {
-                ReplaceFileText("<Target Name=\"MSIAuthoring\">", targetPath, 3);
+                ReplaceFileText("<Target Name=\"MSIAuthoring\">", wixTargetPath, 3);
             }
 
-            Logger.Warn("Repack Path: " + ilRepackPath);
-            if (File.Exists(ilRepackPath))
+            Logger.Warn("Repack Path: " + ilTargetPath);
+            if (File.Exists(ilTargetPath))
             {
-                ReplaceFileText("<Target Name=\"ILRepack\">", ilRepackPath, 13);
+                ReplaceFileText("<Target Name=\"ILRepack\">", ilTargetPath, 13);
             }
         });
 
