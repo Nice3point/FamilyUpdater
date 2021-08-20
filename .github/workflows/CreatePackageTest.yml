@@ -37,9 +37,9 @@ jobs:
             .nuke/temp
             ~/.nuget/packages
           key: ${{ runner.os }}-${{ hashFiles('**/global.json', '**/*.csproj') }}
-      - name: Run './.build/build.cmd InitializeBuilder Restore Cleaning Compile CreateInstaller CreateBundle ZipBundle'
-        run: ./.build/build.cmd InitializeBuilder Restore Cleaning Compile CreateInstaller CreateBundle ZipBundle
+      - name: Run './.build/build.cmd '
+        run: ./.build/build.cmd
       - uses: actions/upload-artifact@v1
-        with:
-          name: output
-          path: output
+      with:
+      name: Product
+      path: output

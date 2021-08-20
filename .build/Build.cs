@@ -5,6 +5,7 @@ using System.IO;
 using System.IO.Compression;
 using System.Linq;
 using System.Text.RegularExpressions;
+using System.Threading;
 using Nuke.Common;
 using Nuke.Common.Execution;
 using Nuke.Common.IO;
@@ -95,6 +96,11 @@ partial class Build : NukeBuild
             proc.StartInfo.FileName  = InstallerInfo.ExecutableFile;
             proc.StartInfo.Arguments = $"\"{ProjectInfo.BinDirectory}\"";
             proc.Start();
+            if (IsServerBuild)
+            {
+                Logger.Normal("Waiting 10 seconds to create installer on another thread");
+                Thread.Sleep(TimeSpan.FromSeconds(10));
+            }
         });
 
     Target CreateBundle => _ => _
