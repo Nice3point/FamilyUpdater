@@ -65,15 +65,16 @@ partial class Build : NukeBuild
 
             var targetPath = Environment.ExpandEnvironmentVariables(WixTargetPath);
             var ilRepackPath = Environment.ExpandEnvironmentVariables(IlRepackTargetPath);
+
+            Logger.Warn("WIX Path: " + targetPath);
             if (File.Exists(targetPath))
             {
-                Logger.Warn("WIX Path: " + targetPath);
-                File.Delete(targetPath);
+                ReplaceFileText("<Target Name=\"MSIAuthoring\">", targetPath, 3);
             }
 
+            Logger.Warn("Repack Path: " + ilRepackPath);
             if (File.Exists(ilRepackPath))
             {
-                Logger.Warn("Repack Path: " + ilRepackPath);
                 ReplaceFileText("<Target Name=\"ILRepack\">", ilRepackPath, 13);
             }
         });
