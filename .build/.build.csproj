@@ -14,12 +14,4 @@
     <PackageReference Include="Nuke.Common" Version="5.3.0"/>
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="ci"/>
-  </ItemGroup>
-
-  <ItemGroup>
-    <None Remove="..\.github\workflows\CreatePackageTest.yml"/>
-  </ItemGroup>
-
 </Project>
