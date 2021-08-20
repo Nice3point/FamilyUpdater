@@ -1,6 +1,6 @@
 ﻿using Nuke.Common.CI.GitHubActions;
 
-[GitHubActions("CreatePackage",
+[GitHubActions("CreatePackageTest",
     GitHubActionsImage.WindowsLatest,
     OnPullRequestBranches = new[] { "main" },
     OnPushBranches = new[] { "main" })]

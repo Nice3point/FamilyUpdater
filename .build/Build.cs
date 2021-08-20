@@ -143,6 +143,8 @@ partial class Build : NukeBuild
     {
         var arrLine = File.ReadAllLines(fileName);
         Logger.Warn(string.Join(' ', arrLine));
+        var lineText = arrLine[lineNumber - 1];
+        if (lineText.Equals(newText)) return;
         arrLine[lineNumber - 1] = newText;
         File.WriteAllLines(fileName, arrLine);
     }
