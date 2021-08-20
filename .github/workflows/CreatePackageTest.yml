@@ -40,6 +40,6 @@ jobs:
       - name: Run './.build/build.cmd '
         run: ./.build/build.cmd
       - uses: actions/upload-artifact@v1
-      with:
-      name: Product
-      path: output
+        with:
+          name: output
+          path: output
