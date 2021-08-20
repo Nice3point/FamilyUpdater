@@ -17,27 +17,24 @@ using static Nuke.Common.Tools.MSBuild.MSBuildTasks;
 // [AzurePipelines(AzurePipelinesImage.WindowsLatest, InvokedTargets = new[] { nameof(InitializeBuilder) })]
 partial class Build : NukeBuild
 {
+    const string WixTargetPath = @"%USERPROFILE%\.nuget\packages\wixsharp\1.18.1\build\WixSharp.targets";
+    const string IlRepackTargetPath = @"%USERPROFILE%\.nuget\packages\ilrepack.lib.msbuild.task\2.0.18.2\build\ILRepack.Lib.MSBuild.Task.targets";
+    readonly AbsolutePath OutputDirectory = RootDirectory / "output";
     [Solution] readonly Solution Solution;
+
+    readonly Regex VersionPattern = new(@"\d+");
     AbsolutePath BundleDirectory;
-    string IlRepackTargetPath;
     ProjectInfo InstallerInfo;
-    AbsolutePath OutputDirectory;
     ProjectInfo ProjectInfo;
-    Regex VersionPattern;
-    string WixTargetPath;
 
     Target InitializeBuilder => _ =>
     {
         return _
             .Executes(() =>
             {
-                InstallerInfo      = new ProjectInfo(Solution, "Installer");
-                ProjectInfo        = new ProjectInfo(Solution, "FamilyUpdater");
-                OutputDirectory    = RootDirectory / "output";
-                BundleDirectory    = OutputDirectory / $"{ProjectInfo.ProjectName}.bundle";
-                WixTargetPath      = @"%USERPROFILE%\.nuget\packages\wixsharp\1.18.1\build\WixSharp.targets";
-                IlRepackTargetPath = @"%USERPROFILE%\.nuget\packages\ilrepack.lib.msbuild.task\2.0.18.2\build\ILRepack.Lib.MSBuild.Task.targets";
-                VersionPattern     = new Regex(@"\d+");
+                InstallerInfo   = new ProjectInfo(Solution, "Installer");
+                ProjectInfo     = new ProjectInfo(Solution, "FamilyUpdater");
+                BundleDirectory = OutputDirectory / $"{ProjectInfo.ProjectName}.bundle";
             });
     };
 
@@ -89,6 +86,7 @@ partial class Build : NukeBuild
 
     Target CreateInstaller => _ => _
         .TriggeredBy(Compile)
+        .Produces(OutputDirectory / "*.msi")
         .Executes(() =>
         {
             var proc = new Process();
@@ -120,15 +118,18 @@ partial class Build : NukeBuild
                     continue;
                 }
 
+                Logger.Normal($"Copy files from: {directoryInfo.FullName} to {buildDirectory}");
                 CopyFilesContent(directoryInfo.FullName, buildDirectory);
             }
         });
 
     Target ZipBundle => _ => _
         .TriggeredBy(CreateBundle)
+        .Produces(OutputDirectory / "*.zip")
         .Executes(() =>
         {
             var archiveName = $"{BundleDirectory}.zip";
+            Logger.Normal($"Archive creation: {BundleDirectory}\\{archiveName}");
             ZipFile.CreateFromDirectory(BundleDirectory, archiveName);
         });
 
