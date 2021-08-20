@@ -86,11 +86,11 @@
         <CallTarget Targets="CopyToRevitFolder"/>
     </Target>
     <Target Name="ReleaseAfterBuild" Outputs="@(OutDll)">
+        <MakeDir Directories="$(MergedDir)"/>
+        <ILRepack TargetKind="Dll" LogFile="$(TargetDir)\ILRepackLog.txt" InputAssemblies="@(AddinDll)" OutputFile="$(MergedDir)$(AssemblyName).dll" LibraryPath="$(TargetDir)"/>
         <ItemGroup>
             <OutDll Include="$(MergedDir)*.dll"/>
         </ItemGroup>
-        <MakeDir Directories="$(MergedDir)" ContinueOnError="true"/>
-        <ILRepack TargetKind="Dll" LogFile="$(TargetDir)\ILRepackLog.txt" InputAssemblies="@(AddinDll)" OutputFile="$(MergedDir)$(AssemblyName).dll" LibraryPath="$(TargetDir)"/>
     </Target>
     <Target Name="CopyToRevitFolder">
         <ItemGroup>
