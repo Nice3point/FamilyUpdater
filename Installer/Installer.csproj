@@ -28,6 +28,7 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="WixSharp" Version="1.18.1"/>
+    <PackageReference Include="WixSharp.bin" Version="1.18.1"/>
     <PackageReference Include="WixSharp.wix.bin" Version="3.11.2"/>
   </ItemGroup>
   <ItemGroup>

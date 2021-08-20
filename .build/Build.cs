@@ -44,9 +44,8 @@ partial class Build : NukeBuild
         .Executes(() =>
         {
             if (IsLocalBuild) return;
-            MSBuild(s => s
-                .SetTargetPath(Solution)
-                .SetTargets("Restore"));
+            var releaseConfigurations = GetReleaseConfigurations();
+            foreach (var configuration in releaseConfigurations) RestoreProject(configuration);
         });
 
     Target Cleaning => _ => _
@@ -67,13 +66,11 @@ partial class Build : NukeBuild
             var wixTargetPath = Environment.ExpandEnvironmentVariables(WixTargetPath);
             var ilTargetPath = Environment.ExpandEnvironmentVariables(IlRepackTargetPath);
 
-            Logger.Warn("WIX Path: " + wixTargetPath);
             if (File.Exists(wixTargetPath))
             {
                 ReplaceFileText("<Target Name=\"MSIAuthoring\">", wixTargetPath, 3);
             }
 
-            Logger.Warn("Repack Path: " + ilTargetPath);
             if (File.Exists(ilTargetPath))
             {
                 ReplaceFileText("<Target Name=\"ILRepack\">", ilTargetPath, 13);
@@ -85,7 +82,6 @@ partial class Build : NukeBuild
         .Executes(() =>
         {
             var releaseConfigurations = GetReleaseConfigurations();
-            if (releaseConfigurations.Count == 0) throw new Exception("There are no configurations in the project.");
             foreach (var configuration in releaseConfigurations) BuildProject(configuration);
         });
 
@@ -134,17 +130,20 @@ partial class Build : NukeBuild
 
     public static int Main() => Execute<Build>(x => x.InitializeBuilder);
 
-    List<string> GetReleaseConfigurations() =>
-        Solution.Configurations
+    List<string> GetReleaseConfigurations()
+    {
+        var configurations = Solution.Configurations
             .Select(pair => pair.Key)
             .Where(s => s.StartsWith("Release"))
             .Select(s => s.Replace("|Any CPU", ""))
             .ToList();
+        if (configurations.Count == 0) throw new Exception("There are no configurations in the project.");
+        return configurations;
+    }
 
     static void ReplaceFileText(string newText, string fileName, int lineNumber)
     {
         var arrLine = File.ReadAllLines(fileName);
-        Logger.Warn(string.Join(' ', arrLine));
         var lineText = arrLine[lineNumber - 1];
         if (lineText.Equals(newText)) return;
         arrLine[lineNumber - 1] = newText;
@@ -167,5 +166,12 @@ partial class Build : NukeBuild
             .SetMSBuildPlatform(MSBuildPlatform.x64)
             .SetMaxCpuCount(Environment.ProcessorCount)
             .DisableNodeReuse()
+        );
+
+    void RestoreProject(string configuration) =>
+        MSBuild(s => s
+            .SetTargetPath(Solution)
+            .SetTargets("Restore")
+            .SetConfiguration(configuration)
         );
 }
