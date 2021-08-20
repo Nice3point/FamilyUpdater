@@ -20,12 +20,13 @@ partial class Build : NukeBuild
     const string WixTargetPath = @"%USERPROFILE%\.nuget\packages\wixsharp\1.18.1\build\WixSharp.targets";
     const string IlRepackTargetPath = @"%USERPROFILE%\.nuget\packages\ilrepack.lib.msbuild.task\2.0.18.2\build\ILRepack.Lib.MSBuild.Task.targets";
     readonly AbsolutePath OutputDirectory = RootDirectory / "output";
-    [Solution] readonly Solution Solution;
 
-    readonly Regex VersionPattern = new(@"\d+");
+    [Solution] readonly Solution Solution;
     AbsolutePath BundleDirectory;
     ProjectInfo InstallerInfo;
     ProjectInfo ProjectInfo;
+
+    Regex VersionPattern;
 
     Target InitializeBuilder => _ =>
     {
@@ -35,6 +36,7 @@ partial class Build : NukeBuild
                 InstallerInfo   = new ProjectInfo(Solution, "Installer");
                 ProjectInfo     = new ProjectInfo(Solution, "FamilyUpdater");
                 BundleDirectory = OutputDirectory / $"{ProjectInfo.ProjectName}.bundle";
+                VersionPattern  = new Regex(@"\d+");
             });
     };
 
