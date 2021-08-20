@@ -65,8 +65,17 @@ partial class Build : NukeBuild
 
             var targetPath = Environment.ExpandEnvironmentVariables(WixTargetPath);
             var ilRepackPath = Environment.ExpandEnvironmentVariables(IlRepackTargetPath);
-            if (File.Exists(targetPath)) File.Delete(targetPath);
-            if (File.Exists(ilRepackPath)) ReplaceFileText("<Target Name=\"ILRepack\">", ilRepackPath, 13);
+            if (File.Exists(targetPath))
+            {
+                Logger.Warn("WIX Path: " + targetPath);
+                File.Delete(targetPath);
+            }
+
+            if (File.Exists(ilRepackPath))
+            {
+                Logger.Warn("Repack Path: " + ilRepackPath);
+                ReplaceFileText("<Target Name=\"ILRepack\">", ilRepackPath, 13);
+            }
         });
 
     Target Compile => _ => _
@@ -121,13 +130,6 @@ partial class Build : NukeBuild
             ZipFile.CreateFromDirectory(BundleDirectory, archiveName);
         });
 
-    static void ReplaceFileText(string newText, string fileName, int lineNumber)
-    {
-        var arrLine = File.ReadAllLines(fileName);
-        arrLine[lineNumber - 1] = newText;
-        File.WriteAllLines(fileName, arrLine);
-    }
-
     public static int Main() => Execute<Build>(x => x.InitializeBuilder);
 
     List<string> GetReleaseConfigurations() =>
@@ -136,6 +138,14 @@ partial class Build : NukeBuild
             .Where(s => s.StartsWith("Release"))
             .Select(s => s.Replace("|Any CPU", ""))
             .ToList();
+
+    static void ReplaceFileText(string newText, string fileName, int lineNumber)
+    {
+        var arrLine = File.ReadAllLines(fileName);
+        Logger.Warn(string.Join(' ', arrLine));
+        arrLine[lineNumber - 1] = newText;
+        File.WriteAllLines(fileName, arrLine);
+    }
 
     static void CopyFilesContent(string sourcePath, string targetPath)
     {
