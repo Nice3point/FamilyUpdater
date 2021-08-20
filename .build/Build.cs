@@ -23,6 +23,7 @@ partial class Build : NukeBuild
     ProjectInfo InstallerInfo;
     AbsolutePath OutputDirectory;
     ProjectInfo ProjectInfo;
+    Regex VersionPattern;
     string WixTargetPath;
 
     Target InitializeBuilder => _ =>
@@ -36,6 +37,7 @@ partial class Build : NukeBuild
                 BundleDirectory    = OutputDirectory / $"{ProjectInfo.ProjectName}.bundle";
                 WixTargetPath      = @"%USERPROFILE%\.nuget\packages\wixsharp\1.18.1\build\WixSharp.targets";
                 IlRepackTargetPath = @"%USERPROFILE%\.nuget\packages\ilrepack.lib.msbuild.task\2.0.18.2\build\ILRepack.Lib.MSBuild.Task.targets";
+                VersionPattern     = new Regex(@"\d+");
             });
     };
 
@@ -105,17 +107,19 @@ partial class Build : NukeBuild
 
             if (addInsDirectory.Count == 0) throw new Exception("There are no packaged assemblies in the project. Try to build the project again.");
             var contentDirectory = BundleDirectory / "Contents";
-            var versionPattern = new Regex(@"\d+");
+            Directory.CreateDirectory(contentDirectory);
+
             foreach (var directoryInfo in addInsDirectory)
             {
-                var version = versionPattern.Match(directoryInfo.Name).Value;
+                var version = VersionPattern.Match(directoryInfo.Name).Value;
+                var buildDirectory = contentDirectory / version;
+
                 if (string.IsNullOrEmpty(version))
                 {
                     Logger.Warn($"Missing version number for build \"{directoryInfo.Name}\"");
                     continue;
                 }
 
-                var buildDirectory = contentDirectory / version;
                 CopyFilesContent(directoryInfo.FullName, buildDirectory);
             }
         });
