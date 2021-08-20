@@ -34,9 +34,6 @@
         <PackageReference Include="Microsoft-WindowsAPICodePack-Shell" Version="1.1.4"/>
         <PackageReference Include="Revit_API_x64" Version="2022.0.0"/>
     </ItemGroup>
-    <!--    <PropertyGroup>-->
-    <!--        <RevitLibPath>C:\Program Files\Autodesk\Revit 2022</RevitLibPath>-->
-    <!--    </PropertyGroup>-->
     <ItemGroup>
         <Reference Include="System"/>
         <Reference Include="System.Core"/>
@@ -59,49 +56,49 @@
 
     <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets"/>
 
-    <!--    <PropertyGroup>-->
-    <!--        <AddinDir>bin\AddIn\</AddinDir>-->
-    <!--        <MergedDir>$(TargetDir)Merged assembly\</MergedDir>-->
-    <!--        <OutAddinDir>$(AddinDir)$(AssemblyName)\</OutAddinDir>-->
-    <!--    </PropertyGroup>-->
-    <!--    <ItemGroup>-->
-    <!--        <AddinDll Include="$(TargetDir)$(AssemblyName).dll"/>-->
-    <!--        <AddinDll Include="$(TargetDir)Microsoft.WindowsAPICodePack.dll"/>-->
-    <!--        <AddinDll Include="$(TargetDir)Microsoft.WindowsAPICodePack.Shell.dll"/>-->
-    <!--        Add DLLs to output folder or for merging below-->
-    <!--        <AddinDll Include="$(TargetDir)Simple.dll" />-->
-    <!--    </ItemGroup>-->
-    <!--    <Target Name="AfterBuild">-->
-    <!--        <CallTarget Condition="$(Configuration.Contains('Debug'))" Targets="DebugAfterBuild">-->
-    <!--            <Output TaskParameter="TargetOutputs" ItemName="OutDll"/>-->
-    <!--        </CallTarget>-->
-    <!--        <CallTarget Condition="$(Configuration.Contains('Release'))" Targets="ReleaseAfterBuild">-->
-    <!--            <Output TaskParameter="TargetOutputs" ItemName="OutDll"/>-->
-    <!--        </CallTarget>-->
-    <!--        <RemoveDir Directories="$(AddinDir)"/>-->
-    <!--        <Copy SourceFiles="$(TargetDir)$(AssemblyName).addin" DestinationFolder="$(AddinDir)"/>-->
-    <!--        <Copy SourceFiles="@(OutDll)" DestinationFolder="$(OutAddinDir)"/>-->
-    <!--    </Target>-->
-    <!--    <Target Name="DebugAfterBuild" Outputs="@(OutDll)">-->
-    <!--        <ItemGroup>-->
-    <!--            <OutDll Include="@(AddinDll)"/>-->
-    <!--        </ItemGroup>-->
-    <!--        <CallTarget Targets="CopyToRevitFolder"/>-->
-    <!--    </Target>-->
-    <!--    <Target Name="ReleaseAfterBuild" Outputs="@(OutDll)">-->
-    <!--        <ItemGroup>-->
-    <!--            <OutDll Include="$(MergedDir)*.dll"/>-->
-    <!--        </ItemGroup>-->
-    <!--                <MakeDir Directories="$(MergedDir)" ContinueOnError="true"/>-->
-    <!--                <ILRepack TargetKind="Dll" LogFile="$(TargetDir)\ILRepackLog.txt" InputAssemblies="@(AddinDll)" OutputFile="$(MergedDir)$(AssemblyName).dll" LibraryPath="$(TargetDir)"/>-->
-    <!--    </Target>-->
-    <!--    <Target Name="CopyToRevitFolder">-->
-    <!--        <ItemGroup>-->
-    <!--            <OutLibPath Include="$(AddinDir)**\*.*"/>-->
-    <!--        </ItemGroup>-->
-    <!--        <Copy SourceFiles="@(OutLibPath)" DestinationFolder="$(AppData)\Autodesk\Revit\Addins\2019\%(RecursiveDir)" Condition="$(Configuration.Contains('R19'))" OverwriteReadOnlyFiles="true"/>-->
-    <!--        <Copy SourceFiles="@(OutLibPath)" DestinationFolder="$(AppData)\Autodesk\Revit\Addins\2020\%(RecursiveDir)" Condition="$(Configuration.Contains('R20'))" OverwriteReadOnlyFiles="true"/>-->
-    <!--        <Copy SourceFiles="@(OutLibPath)" DestinationFolder="$(AppData)\Autodesk\Revit\Addins\2021\%(RecursiveDir)" Condition="$(Configuration.Contains('R21'))" OverwriteReadOnlyFiles="true"/>-->
-    <!--        <Copy SourceFiles="@(OutLibPath)" DestinationFolder="$(AppData)\Autodesk\Revit\Addins\2022\%(RecursiveDir)" Condition="$(Configuration.Contains('R22'))" OverwriteReadOnlyFiles="true"/>-->
-    <!--    </Target>-->
+    <PropertyGroup>
+        <AddinDir>bin\AddIn\</AddinDir>
+        <MergedDir>$(TargetDir)Merged assembly\</MergedDir>
+        <OutAddinDir>$(AddinDir)$(AssemblyName)\</OutAddinDir>
+    </PropertyGroup>
+    <ItemGroup>
+        <AddinDll Include="$(TargetDir)$(AssemblyName).dll"/>
+        <AddinDll Include="$(TargetDir)Microsoft.WindowsAPICodePack.dll"/>
+        <AddinDll Include="$(TargetDir)Microsoft.WindowsAPICodePack.Shell.dll"/>
+        <!--            Add DLLs to output folder or for merging below-->
+        <!--            <AddinDll Include="$(TargetDir)Simple.dll" />-->
+    </ItemGroup>
+    <Target Name="AfterBuild">
+        <CallTarget Condition="$(Configuration.Contains('Debug'))" Targets="DebugAfterBuild">
+            <Output TaskParameter="TargetOutputs" ItemName="OutDll"/>
+        </CallTarget>
+        <CallTarget Condition="$(Configuration.Contains('Release'))" Targets="ReleaseAfterBuild">
+            <Output TaskParameter="TargetOutputs" ItemName="OutDll"/>
+        </CallTarget>
+        <RemoveDir Directories="$(AddinDir)"/>
+        <Copy SourceFiles="$(TargetDir)$(AssemblyName).addin" DestinationFolder="$(AddinDir)"/>
+        <Copy SourceFiles="@(OutDll)" DestinationFolder="$(OutAddinDir)"/>
+    </Target>
+    <Target Name="DebugAfterBuild" Outputs="@(OutDll)">
+        <ItemGroup>
+            <OutDll Include="@(AddinDll)"/>
+        </ItemGroup>
+        <CallTarget Targets="CopyToRevitFolder"/>
+    </Target>
+    <Target Name="ReleaseAfterBuild" Outputs="@(OutDll)">
+        <ItemGroup>
+            <OutDll Include="$(MergedDir)*.dll"/>
+        </ItemGroup>
+        <MakeDir Directories="$(MergedDir)" ContinueOnError="true"/>
+        <ILRepack TargetKind="Dll" LogFile="$(TargetDir)\ILRepackLog.txt" InputAssemblies="@(AddinDll)" OutputFile="$(MergedDir)$(AssemblyName).dll" LibraryPath="$(TargetDir)"/>
+    </Target>
+    <Target Name="CopyToRevitFolder">
+        <ItemGroup>
+            <OutLibPath Include="$(AddinDir)**\*.*"/>
+        </ItemGroup>
+        <Copy SourceFiles="@(OutLibPath)" DestinationFolder="$(AppData)\Autodesk\Revit\Addins\2019\%(RecursiveDir)" Condition="$(Configuration.Contains('R19'))" OverwriteReadOnlyFiles="true"/>
+        <Copy SourceFiles="@(OutLibPath)" DestinationFolder="$(AppData)\Autodesk\Revit\Addins\2020\%(RecursiveDir)" Condition="$(Configuration.Contains('R20'))" OverwriteReadOnlyFiles="true"/>
+        <Copy SourceFiles="@(OutLibPath)" DestinationFolder="$(AppData)\Autodesk\Revit\Addins\2021\%(RecursiveDir)" Condition="$(Configuration.Contains('R21'))" OverwriteReadOnlyFiles="true"/>
+        <Copy SourceFiles="@(OutLibPath)" DestinationFolder="$(AppData)\Autodesk\Revit\Addins\2022\%(RecursiveDir)" Condition="$(Configuration.Contains('R22'))" OverwriteReadOnlyFiles="true"/>
+    </Target>
 </Project>

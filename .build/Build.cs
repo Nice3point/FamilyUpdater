@@ -19,21 +19,38 @@ partial class Build : NukeBuild
 {
     [Solution] readonly Solution Solution;
     AbsolutePath BundleDirectory;
+    string IlRepackTargetPath;
     ProjectInfo InstallerInfo;
     AbsolutePath OutputDirectory;
     ProjectInfo ProjectInfo;
+    string WixTargetPath;
 
-    Target InitializeBuilder => _ => _
+    Target InitializeBuilder => _ =>
+    {
+        return _
+            .Executes(() =>
+            {
+                InstallerInfo      = new ProjectInfo(Solution, "Installer");
+                ProjectInfo        = new ProjectInfo(Solution, "FamilyUpdater");
+                OutputDirectory    = RootDirectory / "output";
+                BundleDirectory    = OutputDirectory / $"{ProjectInfo.ProjectName}.bundle";
+                WixTargetPath      = @"%USERPROFILE%\.nuget\packages\wixsharp\1.18.1\build\WixSharp.targets";
+                IlRepackTargetPath = @"%USERPROFILE%\.nuget\packages\ilrepack.lib.msbuild.task\2.0.18.2\build\ILRepack.Lib.MSBuild.Task.targets";
+            });
+    };
+
+    Target Restore => _ => _
+        .TriggeredBy(InitializeBuilder)
         .Executes(() =>
         {
-            InstallerInfo   = new ProjectInfo(Solution, "Installer");
-            ProjectInfo     = new ProjectInfo(Solution, "FamilyUpdater");
-            OutputDirectory = RootDirectory / "output";
-            BundleDirectory = OutputDirectory / $"{ProjectInfo.ProjectName}.bundle";
+            if (IsLocalBuild) return;
+            MSBuild(s => s
+                .SetTargetPath(Solution)
+                .SetTargets("Restore"));
         });
 
     Target Cleaning => _ => _
-        .TriggeredBy(InitializeBuilder)
+        .TriggeredBy(Restore)
         .Executes(() =>
         {
             if (!Directory.Exists(OutputDirectory))
@@ -45,19 +62,15 @@ partial class Build : NukeBuild
             var directoryInfo = new DirectoryInfo(OutputDirectory);
             foreach (var file in directoryInfo.GetFiles()) file.Delete();
             foreach (var dir in directoryInfo.GetDirectories()) dir.Delete(true);
-        });
 
-    Target Restore => _ => _
-        .TriggeredBy(Cleaning)
-        .Executes(() =>
-        {
-            MSBuild(s => s
-                .SetTargetPath(Solution)
-                .SetTargets("Restore"));
+            var targetPath = Environment.ExpandEnvironmentVariables(WixTargetPath);
+            var ilRepackPath = Environment.ExpandEnvironmentVariables(IlRepackTargetPath);
+            if (File.Exists(targetPath)) File.Delete(targetPath);
+            if (File.Exists(ilRepackPath)) ReplaceFileText("<Target Name=\"ILRepack\">", ilRepackPath, 13);
         });
 
     Target Compile => _ => _
-        .TriggeredBy(Restore)
+        .TriggeredBy(Cleaning)
         .Executes(() =>
         {
             var releaseConfigurations = GetReleaseConfigurations();
@@ -108,6 +121,13 @@ partial class Build : NukeBuild
             ZipFile.CreateFromDirectory(BundleDirectory, archiveName);
         });
 
+    static void ReplaceFileText(string newText, string fileName, int lineNumber)
+    {
+        var arrLine = File.ReadAllLines(fileName);
+        arrLine[lineNumber - 1] = newText;
+        File.WriteAllLines(fileName, arrLine);
+    }
+
     public static int Main() => Execute<Build>(x => x.InitializeBuilder);
 
     List<string> GetReleaseConfigurations() =>
@@ -127,11 +147,11 @@ partial class Build : NukeBuild
 
     void BuildProject(string configuration) =>
         MSBuild(s => s
-                .SetTargetPath(Solution)
-                .SetTargets("Rebuild")
-                .SetConfiguration(configuration)
-            // .SetMSBuildPlatform(MSBuildPlatform.x64)
-            // .SetMaxCpuCount(Environment.ProcessorCount)
-            // .DisableNodeReuse()
+            .SetTargetPath(Solution)
+            .SetTargets("Rebuild")
+            .SetConfiguration(configuration)
+            .SetMSBuildPlatform(MSBuildPlatform.x64)
+            .SetMaxCpuCount(Environment.ProcessorCount)
+            .DisableNodeReuse()
         );
 }
