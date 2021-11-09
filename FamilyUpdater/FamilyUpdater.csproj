@@ -1,104 +1,140 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-    <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')"/>
+﻿<Project Sdk="Microsoft.NET.Sdk">
     <PropertyGroup>
-        <ProjectGuid>{0C43274F-1BBE-4125-9006-6B408066EDEE}</ProjectGuid>
-        <OutputType>Library</OutputType>
-        <AppDesignerFolder>Properties</AppDesignerFolder>
-        <RootNamespace>FamilyUpdater</RootNamespace>
-        <AssemblyName>FamilyUpdater</AssemblyName>
-        <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
-        <FileAlignment>512</FileAlignment>
+        <UseWPF>true</UseWPF>
         <LangVersion>9</LangVersion>
-    </PropertyGroup>
-    <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-        <DebugType>none</DebugType>
-        <Optimize>true</Optimize>
-        <ErrorReport>prompt</ErrorReport>
-        <WarningLevel>4</WarningLevel>
-        <OutputPath>bin\Release\</OutputPath>
         <PlatformTarget>x64</PlatformTarget>
+        <TargetFramework>net48</TargetFramework>
+        <Configurations>Debug R19;Debug R20;Debug R21;Debug R22;Release R19;Release R20;Release R21;Release R22</Configurations>
     </PropertyGroup>
-    <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-        <DebugSymbols>true</DebugSymbols>
+    <PropertyGroup Condition=" '$(Configuration)' == 'Debug R19' ">
         <DebugType>full</DebugType>
-        <Optimize>false</Optimize>
-        <DefineConstants>DEBUG;TRACE</DefineConstants>
-        <ErrorReport>prompt</ErrorReport>
-        <WarningLevel>4</WarningLevel>
-        <OutputPath>bin\Debug\</OutputPath>
-        <PlatformTarget>x64</PlatformTarget>
+        <DebugSymbols>true</DebugSymbols>
+        <DefineConstants>DEBUG;TRACE;R19</DefineConstants>
     </PropertyGroup>
+    <PropertyGroup Condition=" '$(Configuration)' == 'Debug R20' ">
+        <DebugType>full</DebugType>
+        <DebugSymbols>true</DebugSymbols>
+        <DefineConstants>DEBUG;TRACE;R20</DefineConstants>
+    </PropertyGroup>
+    <PropertyGroup Condition=" '$(Configuration)' == 'Debug R21' ">
+        <DebugType>full</DebugType>
+        <DebugSymbols>true</DebugSymbols>
+        <DefineConstants>DEBUG;TRACE;R21</DefineConstants>
+    </PropertyGroup>
+    <PropertyGroup Condition=" '$(Configuration)' == 'Debug R22' ">
+        <DebugType>full</DebugType>
+        <DebugSymbols>true</DebugSymbols>
+        <DefineConstants>DEBUG;TRACE;R22</DefineConstants>
+    </PropertyGroup>
+    <PropertyGroup Condition=" '$(Configuration)' == 'Release R19' ">
+        <Optimize>true</Optimize>
+        <DebugType>none</DebugType>
+        <DefineConstants>R19</DefineConstants>
+    </PropertyGroup>
+    <PropertyGroup Condition=" '$(Configuration)' == 'Release R20' ">
+        <Optimize>true</Optimize>
+        <DebugType>none</DebugType>
+        <DefineConstants>R20</DefineConstants>
+    </PropertyGroup>
+    <PropertyGroup Condition=" '$(Configuration)' == 'Release R21' ">
+        <Optimize>true</Optimize>
+        <DebugType>none</DebugType>
+        <DefineConstants>R21</DefineConstants>
+    </PropertyGroup>
+    <PropertyGroup Condition=" '$(Configuration)' == 'Release R22' ">
+        <Optimize>true</Optimize>
+        <DebugType>none</DebugType>
+        <DefineConstants>R22</DefineConstants>
+    </PropertyGroup>
+
+    <Choose>
+        <When Condition="$(Configuration.Contains('R19'))">
+            <PropertyGroup>
+                <RevitVersion>2019</RevitVersion>
+            </PropertyGroup>
+        </When>
+        <When Condition="$(Configuration.Contains('R20'))">
+            <PropertyGroup>
+                <RevitVersion>2020</RevitVersion>
+            </PropertyGroup>
+        </When>
+        <When Condition="$(Configuration.Contains('R21'))">
+            <PropertyGroup>
+                <RevitVersion>2021</RevitVersion>
+            </PropertyGroup>
+        </When>
+        <When Condition="$(Configuration.Contains('R22'))">
+            <PropertyGroup>
+                <RevitVersion>2022</RevitVersion>
+            </PropertyGroup>
+        </When>
+    </Choose>
+
     <ItemGroup>
-        <PackageReference Include="ILRepack.Lib.MSBuild.Task" Version="2.0.18.2"/>
+        <PackageReference Include="ILRepack.Lib.MSBuild.Task">
+            <Version>2.0.18.2</Version>
+        </PackageReference>
+        <PackageReference Include="JetBrains.Annotations">
+            <Version>2021.2.0</Version>
+        </PackageReference>
+        <PackageReference Include="Revit_API_x64" Version="$(RevitVersion).0.0"/>
         <PackageReference Include="Microsoft-WindowsAPICodePack-Shell" Version="1.1.4"/>
-        <PackageReference Include="Revit_API_x64" Version="2022.0.0"/>
-    </ItemGroup>
-    <ItemGroup>
-        <Reference Include="System"/>
-        <Reference Include="System.Core"/>
-        <Reference Include="System.Data"/>
-        <Reference Include="System.Xml"/>
-        <Reference Include="PresentationFramework"/>
     </ItemGroup>
 
     <ItemGroup>
-        <None Include="FamilyUpdater.addin">
+        <Resource Include="Resources\Icons\RibbonIcon16.png"/>
+        <Resource Include="Resources\Icons\RibbonIcon32.png"/>
+    </ItemGroup>
+
+    <ItemGroup>
+        <None Update="FamilyUpdater.addin">
             <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
         </None>
     </ItemGroup>
-    <ItemGroup>
-        <Compile Include="FileFormats.cs"/>
-        <Compile Include="Logger.cs"/>
-        <Compile Include="Properties\AssemblyInfo.cs"/>
-        <Compile Include="Updater.cs"/>
-    </ItemGroup>
 
-    <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets"/>
-
-    <PropertyGroup>
-        <AddinDir>bin\AddIn\</AddinDir>
-        <MergedDir>$(TargetDir)Merged assembly\</MergedDir>
-        <OutAddinDir>$(AddinDir)$(AssemblyName)\</OutAddinDir>
-    </PropertyGroup>
     <ItemGroup>
         <AddinDll Include="$(TargetDir)$(AssemblyName).dll"/>
         <AddinDll Include="$(TargetDir)Microsoft.WindowsAPICodePack.dll"/>
         <AddinDll Include="$(TargetDir)Microsoft.WindowsAPICodePack.Shell.dll"/>
-        <!--            Add DLLs to output folder or for merging below-->
-        <!--            <AddinDll Include="$(TargetDir)Simple.dll" />-->
+        <!--        Add DLLs to output folder or for merging below-->
+        <!--        <AddinDll Include="$(TargetDir)Simple.dll" />-->
     </ItemGroup>
-    <Target Name="AfterBuild">
+
+    <Target Name="AfterBuildTarget" AfterTargets="CoreBuild">
+        <PropertyGroup>
+            <AddinDir>bin\AddIn $(RevitVersion) $(Configuration)\</AddinDir>
+            <OutAddinDir>$(AddinDir)$(AssemblyName)\</OutAddinDir>
+        </PropertyGroup>
+
         <CallTarget Condition="$(Configuration.Contains('Debug'))" Targets="DebugAfterBuild">
             <Output TaskParameter="TargetOutputs" ItemName="OutDll"/>
         </CallTarget>
         <CallTarget Condition="$(Configuration.Contains('Release'))" Targets="ReleaseAfterBuild">
             <Output TaskParameter="TargetOutputs" ItemName="OutDll"/>
         </CallTarget>
-        <RemoveDir Directories="$(AddinDir)"/>
+
         <Copy SourceFiles="$(TargetDir)$(AssemblyName).addin" DestinationFolder="$(AddinDir)"/>
         <Copy SourceFiles="@(OutDll)" DestinationFolder="$(OutAddinDir)"/>
+
+        <ItemGroup>
+            <OutLibPath Include="$(AddinDir)**\*.*"/>
+        </ItemGroup>
+        <Copy SourceFiles="@(OutLibPath)" DestinationFolder="$(AppData)\Autodesk\Revit\Addins\$(RevitVersion)\%(RecursiveDir)" Condition="$(Configuration.Contains('Debug'))"/>
     </Target>
     <Target Name="DebugAfterBuild" Outputs="@(OutDll)">
         <ItemGroup>
             <OutDll Include="@(AddinDll)"/>
         </ItemGroup>
-        <CallTarget Targets="CopyToRevitFolder"/>
     </Target>
     <Target Name="ReleaseAfterBuild" Outputs="@(OutDll)">
-        <MakeDir Directories="$(MergedDir)"/>
+        <PropertyGroup>
+            <MergedDir>$(TargetDir)Merged assembly\</MergedDir>
+        </PropertyGroup>
+
         <ILRepack TargetKind="Dll" LogFile="$(TargetDir)\ILRepackLog.txt" InputAssemblies="@(AddinDll)" OutputFile="$(MergedDir)$(AssemblyName).dll" LibraryPath="$(TargetDir)"/>
+
         <ItemGroup>
             <OutDll Include="$(MergedDir)*.dll"/>
         </ItemGroup>
-    </Target>
-    <Target Name="CopyToRevitFolder">
-        <ItemGroup>
-            <OutLibPath Include="$(AddinDir)**\*.*"/>
-        </ItemGroup>
-        <Copy SourceFiles="@(OutLibPath)" DestinationFolder="$(AppData)\Autodesk\Revit\Addins\2019\%(RecursiveDir)" Condition="$(Configuration.Contains('R19'))" OverwriteReadOnlyFiles="true"/>
-        <Copy SourceFiles="@(OutLibPath)" DestinationFolder="$(AppData)\Autodesk\Revit\Addins\2020\%(RecursiveDir)" Condition="$(Configuration.Contains('R20'))" OverwriteReadOnlyFiles="true"/>
-        <Copy SourceFiles="@(OutLibPath)" DestinationFolder="$(AppData)\Autodesk\Revit\Addins\2021\%(RecursiveDir)" Condition="$(Configuration.Contains('R21'))" OverwriteReadOnlyFiles="true"/>
-        <Copy SourceFiles="@(OutLibPath)" DestinationFolder="$(AppData)\Autodesk\Revit\Addins\2022\%(RecursiveDir)" Condition="$(Configuration.Contains('R22'))" OverwriteReadOnlyFiles="true"/>
     </Target>
 </Project>

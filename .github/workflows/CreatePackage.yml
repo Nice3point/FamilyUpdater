@@ -1,4 +1,4 @@
-name: CreatePackageTest
+name: CreatePackage
 
 on:
   push:
@@ -21,9 +21,9 @@ jobs:
             .nuke/temp
             ~/.nuget/packages
           key: ${{ runner.os }}-${{ hashFiles('**/global.json', '**/*.csproj') }}
-      - name: Run './.build/build.cmd '
-        run: ./.build/build.cmd
+      - name: Run './build/build.cmd'
+        run: ./build/build.cmd
       - uses: actions/upload-artifact@v1
         with:
-          name: Product
+          name: FamilyUpdater
           path: output

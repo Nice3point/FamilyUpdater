@@ -1,6 +1,6 @@
 ﻿using System.IO;
 
-namespace FamilyUpdater
+namespace FamilyUpdater.Core
 {
     public class Logger
     {

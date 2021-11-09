@@ -1,23 +1,42 @@
-﻿
-Microsoft Visual Studio Solution File, Format Version 12.00
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FamilyUpdater", "FamilyUpdater\FamilyUpdater.csproj", "{0C43274F-1BBE-4125-9006-6B408066EDEE}"
+﻿Microsoft Visual Studio Solution File, Format Version 12.00
+VisualStudioVersion = 16.0.31515.178
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{D5422E2E-5DE5-4107-A6E6-E308BB690155}") = "Installer", "Installer\Installer.csproj", "{1B1FAE8C-C200-405F-8493-1993B9ED5EFE}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = ".build", ".build\.build.csproj", "{A9EBA101-0539-4BD2-BB74-60949B337728}"
+Project("{D5422E2E-5DE5-4107-A6E6-E308BB690155}") = "Build", "Build\Build.csproj", "{79832E47-9803-405D-89A1-A784D49DE15F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Installer", "Installer\Installer.csproj", "{853ECA64-D337-4AB9-8D44-3D84F52F35AF}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FamilyUpdater", "FamilyUpdater\FamilyUpdater.csproj", "{DCEF022D-4AEA-418F-B2BB-8AD9F0B0510F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
-		Release|Any CPU = Release|Any CPU
-		Debug|Any CPU = Debug|Any CPU
+		Debug R19|Any CPU = Debug R19|Any CPU
+		Debug R20|Any CPU = Debug R20|Any CPU
+		Debug R21|Any CPU = Debug R21|Any CPU
+		Debug R22|Any CPU = Debug R22|Any CPU
+		Release R19|Any CPU = Release R19|Any CPU
+		Release R20|Any CPU = Release R20|Any CPU
+		Release R21|Any CPU = Release R21|Any CPU
+		Release R22|Any CPU = Release R22|Any CPU
+		Installer|Any CPU = Installer|Any CPU
 	EndGlobalSection
-	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{0C43274F-1BBE-4125-9006-6B408066EDEE}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{0C43274F-1BBE-4125-9006-6B408066EDEE}.Release|Any CPU.Build.0 = Release|Any CPU
-		{0C43274F-1BBE-4125-9006-6B408066EDEE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{0C43274F-1BBE-4125-9006-6B408066EDEE}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{853ECA64-D337-4AB9-8D44-3D84F52F35AF}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{853ECA64-D337-4AB9-8D44-3D84F52F35AF}.Release|Any CPU.Build.0 = Release|Any CPU
-		{A9EBA101-0539-4BD2-BB74-60949B337728}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-	EndGlobalSection
+    GlobalSection(ProjectConfigurationPlatforms) = postSolution
+        {1B1FAE8C-C200-405F-8493-1993B9ED5EFE}.Installer|Any CPU.ActiveCfg = Release|Any CPU
+        {1B1FAE8C-C200-405F-8493-1993B9ED5EFE}.Installer|Any CPU.Build.0 = Release|Any CPU
+        {DCEF022D-4AEA-418F-B2BB-8AD9F0B0510F}.Debug R19|Any CPU.ActiveCfg = Debug R19|Any CPU
+        {DCEF022D-4AEA-418F-B2BB-8AD9F0B0510F}.Debug R19|Any CPU.Build.0 = Debug R19|Any CPU
+        {DCEF022D-4AEA-418F-B2BB-8AD9F0B0510F}.Debug R20|Any CPU.ActiveCfg = Debug R20|Any CPU
+        {DCEF022D-4AEA-418F-B2BB-8AD9F0B0510F}.Debug R20|Any CPU.Build.0 = Debug R20|Any CPU
+        {DCEF022D-4AEA-418F-B2BB-8AD9F0B0510F}.Debug R21|Any CPU.ActiveCfg = Debug R21|Any CPU
+        {DCEF022D-4AEA-418F-B2BB-8AD9F0B0510F}.Debug R21|Any CPU.Build.0 = Debug R21|Any CPU
+        {DCEF022D-4AEA-418F-B2BB-8AD9F0B0510F}.Debug R22|Any CPU.ActiveCfg = Debug R22|Any CPU
+        {DCEF022D-4AEA-418F-B2BB-8AD9F0B0510F}.Debug R22|Any CPU.Build.0 = Debug R22|Any CPU
+        {DCEF022D-4AEA-418F-B2BB-8AD9F0B0510F}.Release R19|Any CPU.ActiveCfg = Release R19|Any CPU
+        {DCEF022D-4AEA-418F-B2BB-8AD9F0B0510F}.Release R19|Any CPU.Build.0 = Release R19|Any CPU
+        {DCEF022D-4AEA-418F-B2BB-8AD9F0B0510F}.Release R20|Any CPU.ActiveCfg = Release R20|Any CPU
+        {DCEF022D-4AEA-418F-B2BB-8AD9F0B0510F}.Release R20|Any CPU.Build.0 = Release R20|Any CPU
+        {DCEF022D-4AEA-418F-B2BB-8AD9F0B0510F}.Release R21|Any CPU.ActiveCfg = Release R21|Any CPU
+        {DCEF022D-4AEA-418F-B2BB-8AD9F0B0510F}.Release R21|Any CPU.Build.0 = Release R21|Any CPU
+        {DCEF022D-4AEA-418F-B2BB-8AD9F0B0510F}.Release R22|Any CPU.ActiveCfg = Release R22|Any CPU
+        {DCEF022D-4AEA-418F-B2BB-8AD9F0B0510F}.Release R22|Any CPU.Build.0 = Release R22|Any CPU
+    EndGlobalSection
 EndGlobal

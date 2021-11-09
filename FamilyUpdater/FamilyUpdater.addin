@@ -1,11 +1,11 @@
-<RevitAddIns>
+﻿<RevitAddIns>
     <AddIn Type="Command">
         <Name>Family updater</Name>
         <Description>Updates revit files to the current version</Description>
         <Text>Family updater</Text>
         <Assembly>FamilyUpdater/FamilyUpdater.dll</Assembly>
         <AddInId>61EECA80-D86F-4DB0-8B57-A7E81E4775AD</AddInId>
-        <FullClassName>FamilyUpdater.Updater</FullClassName>
+        <FullClassName>FamilyUpdater.Commands.UpdateCommand</FullClassName>
         <VendorId>Nice3point</VendorId>
         <VendorDescription>@Nice3point</VendorDescription>
     </AddIn>
