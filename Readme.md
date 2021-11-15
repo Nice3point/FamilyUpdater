@@ -4,10 +4,8 @@ This repository contains a plugin for updating families to the current version o
 
 ## Installation
 
-- Go to the [**Git Actions**](https://github.com/Nice3point/FamilyUpdater/actions/workflows/CreatePackage.yml) section on the project page.
-- Open the most recent successful workflow.
-- Download and open **FamilyUpdater.zip** from the **Artifacts** section.
-- Run the MSI package.
+- Go to the [**Releases**](https://github.com/Nice3point/FamilyUpdater/releases/latest) section.
+- Download and run MSI file.
 
 ## Usage
 
