@@ -52,6 +52,7 @@ namespace FamilyUpdater.Commands
                         var document = application.OpenDocumentFile(file);
                         var saveAsOptions = new SaveAsOptions {OverwriteExistingFile = true};
                         document.SaveAs(savedFilePath, saveAsOptions);
+                        document.Close();
                     }
                     catch (Exception e)
                     {
