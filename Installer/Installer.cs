@@ -16,7 +16,7 @@ namespace Installer
         private const string ProjectName = "FamilyUpdater";
         private const string OutputName = "FamilyUpdater";
         private const string OutputDir = "output";
-        private const string Version = "1.0.2";
+        private const string Version = "1.0.3";
 
         public static void Main(string[] args)
         {
