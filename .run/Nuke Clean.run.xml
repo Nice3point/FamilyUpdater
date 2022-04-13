@@ -1,14 +1,14 @@
 ﻿<component name="ProjectRunConfigurationManager">
     <configuration default="false"
-                   name="Revit 2020 ENU"
+                   name="Nuke Clean"
                    type="RunExe"
                    factoryName=".NET Executable">
         <option name="EXE_PATH"
-                value="C:/Program Files/Autodesk/Revit 2020/Revit.exe"/>
+                value="$USER_HOME$/.dotnet/tools/nuke.exe"/>
         <option name="PROGRAM_PARAMETERS"
-                value="/language ENU"/>
+                value="--Cleaning --skip Compile"/>
         <option name="WORKING_DIRECTORY"
-                value="C:/Program Files/Autodesk/Revit 2020"/>
+                value="$PROJECT_DIR$/"/>
         <option name="PASS_PARENT_ENVS"
                 value="1"/>
         <option name="USE_EXTERNAL_CONSOLE"
@@ -18,7 +18,7 @@
         <option name="RUNTIME_ARGUMENTS"
                 value=""/>
         <method v="2">
-            <option name="Build Solution"
+            <option name="CleanSolution"
                     enabled="true"/>
         </method>
     </configuration>

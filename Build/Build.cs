@@ -1,70 +1,15 @@
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
+using System.Text.RegularExpressions;
 using Nuke.Common;
 using Nuke.Common.Git;
 using Nuke.Common.IO;
 using Nuke.Common.ProjectModel;
-using Nuke.Common.Tooling;
-using Nuke.Common.Tools.MSBuild;
-using Nuke.Common.Tools.VSWhere;
-using static Nuke.Common.Tools.MSBuild.MSBuildTasks;
 
 partial class Build : NukeBuild
 {
     readonly AbsolutePath ArtifactsDirectory = RootDirectory / ArtifactsFolder;
     readonly AbsolutePath ChangeLogPath = RootDirectory / "Changelog.md";
     [GitRepository] readonly GitRepository GitRepository;
-    [Solution] public readonly Solution Solution;
-
-    Target Cleaning => _ => _
-        .Executes(() =>
-        {
-            if (Directory.Exists(ArtifactsDirectory))
-            {
-                var directoryInfo = new DirectoryInfo(ArtifactsDirectory);
-                foreach (var file in directoryInfo.GetFiles())
-                {
-                    Logger.Normal($"Deleting file: {file.FullName}");
-                    file.Delete();
-                }
-
-                foreach (var dir in directoryInfo.GetDirectories())
-                {
-                    Logger.Normal($"Deleting directory: {dir.FullName}");
-                    dir.Delete(true);
-                }
-            }
-            else
-            {
-                Logger.Normal($"Creating directory: {ArtifactsDirectory}");
-                Directory.CreateDirectory(ArtifactsDirectory);
-            }
-
-            if (IsServerBuild) return;
-            foreach (var projectName in Projects)
-            {
-                var project = BuilderExtensions.GetProject(Solution, projectName);
-                var binDirectory = new DirectoryInfo(project.GetBinDirectory());
-                if (!binDirectory.Exists) return;
-                var addInDirectories = binDirectory.EnumerateDirectories().Where(info => info.Name.StartsWith(AddInBinPrefix)).ToList();
-                foreach (var addInDirectory in addInDirectories)
-                {
-                    Logger.Normal($"Deleting directory: {addInDirectory.FullName}");
-                    foreach (var file in addInDirectory.GetFiles()) file.Delete();
-                    addInDirectory.Delete(true);
-                }
-            }
-        });
-
-    Target Compile => _ => _
-        .TriggeredBy(Cleaning)
-        .Executes(() =>
-        {
-            var configurations = GetConfigurations(BuildConfiguration, InstallerConfiguration);
-            foreach (var configuration in configurations) BuildProject(configuration);
-        });
+    [Solution] readonly Solution Solution;
 
     public static int Main() => Execute<Build>(x => x.Cleaning);
 
@@ -83,7 +28,7 @@ partial class Build : NukeBuild
         return configurations;
     }
 
-    IEnumerable<IGrouping<int, DirectoryInfo>> GetBuildDirectories()
+    IEnumerable<IGrouping<string, DirectoryInfo>> GetBuildDirectories()
     {
         var directories = new List<DirectoryInfo>();
         foreach (var projectName in Projects)
@@ -95,40 +40,12 @@ partial class Build : NukeBuild
 
         if (directories.Count == 0) throw new Exception("There are no packaged assemblies in the project. Try to build the project again.");
 
+        var versionRegex = new Regex(@"^.*R\d+ ?");
         var addInsDirectory = directories
             .Where(dir => dir.Name.StartsWith(AddInBinPrefix))
             .Where(dir => dir.Name.Contains(BuildConfiguration))
-            .GroupBy(dir => dir.Name.Length);
+            .GroupBy(dir => versionRegex.Replace(dir.Name, string.Empty));
 
         return addInsDirectory;
-    }
-
-    string GetMsBuildPath()
-    {
-        if (IsServerBuild) return null;
-        var vsWhere = VSWhereTasks.VSWhere(settings => settings
-            .EnableLatest()
-            .AddRequires("Microsoft.Component.MSBuild")
-            .DisableProcessLogOutput()
-            .DisableProcessLogInvocation()
-        );
-
-        if (vsWhere.Output.Count > 3) return null;
-        if (!File.Exists(CustomMsBuildPath)) throw new Exception($"Missing file: {CustomMsBuildPath}. Change the path to the build platform or install Visual Studio.");
-        return CustomMsBuildPath;
-    }
-
-    void BuildProject(string configuration)
-    {
-        MSBuild(s => s
-            .SetTargets("Rebuild")
-            .SetTargetPath(Solution)
-            .SetConfiguration(configuration)
-            .SetProcessToolPath(GetMsBuildPath())
-            .SetVerbosity(MSBuildVerbosity.Minimal)
-            .SetMSBuildPlatform(MSBuildPlatform.x64)
-            .SetMaxCpuCount(Environment.ProcessorCount)
-            .DisableNodeReuse()
-            .EnableRestore());
     }
 }

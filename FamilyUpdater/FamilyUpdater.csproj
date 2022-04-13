@@ -1,116 +1,84 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
     <PropertyGroup>
         <UseWPF>true</UseWPF>
-        <LangVersion>9</LangVersion>
+        <LangVersion>latest</LangVersion>
         <PlatformTarget>x64</PlatformTarget>
+        <ImplicitUsings>true</ImplicitUsings>
         <TargetFramework>net48</TargetFramework>
-        <Configurations>Debug R19;Debug R20;Debug R21;Debug R22;Release R19;Release R20;Release R21;Release R22</Configurations>
+        <Configurations>Debug R19;Debug R20;Debug R21;Debug R22;Debug R23</Configurations>
+        <Configurations>$(Configurations);Release R19;Release R20;Release R21;Release R22;Release R23</Configurations>
     </PropertyGroup>
-    <PropertyGroup Condition=" '$(Configuration)' == 'Debug R19' ">
-        <DebugType>full</DebugType>
+    <PropertyGroup Condition="$(Configuration.Contains('Debug'))">
         <DebugSymbols>true</DebugSymbols>
-        <DefineConstants>DEBUG;TRACE;R19</DefineConstants>
-    </PropertyGroup>
-    <PropertyGroup Condition=" '$(Configuration)' == 'Debug R20' ">
         <DebugType>full</DebugType>
-        <DebugSymbols>true</DebugSymbols>
-        <DefineConstants>DEBUG;TRACE;R20</DefineConstants>
+        <DefineConstants>$(DefineConstants);DEBUG</DefineConstants>
     </PropertyGroup>
-    <PropertyGroup Condition=" '$(Configuration)' == 'Debug R21' ">
-        <DebugType>full</DebugType>
-        <DebugSymbols>true</DebugSymbols>
-        <DefineConstants>DEBUG;TRACE;R21</DefineConstants>
-    </PropertyGroup>
-    <PropertyGroup Condition=" '$(Configuration)' == 'Debug R22' ">
-        <DebugType>full</DebugType>
-        <DebugSymbols>true</DebugSymbols>
-        <DefineConstants>DEBUG;TRACE;R22</DefineConstants>
-    </PropertyGroup>
-    <PropertyGroup Condition=" '$(Configuration)' == 'Release R19' ">
+    <PropertyGroup Condition="$(Configuration.Contains('Release'))">
         <Optimize>true</Optimize>
         <DebugType>none</DebugType>
-        <DefineConstants>R19</DefineConstants>
+        <DefineConstants>$(DefineConstants);RELEASE</DefineConstants>
     </PropertyGroup>
-    <PropertyGroup Condition=" '$(Configuration)' == 'Release R20' ">
-        <Optimize>true</Optimize>
-        <DebugType>none</DebugType>
-        <DefineConstants>R20</DefineConstants>
+    <PropertyGroup Condition="$(Configuration.Contains('R19'))">
+        <RevitVersion>2019</RevitVersion>
+        <DefineConstants>$(DefineConstants);R19</DefineConstants>
     </PropertyGroup>
-    <PropertyGroup Condition=" '$(Configuration)' == 'Release R21' ">
-        <Optimize>true</Optimize>
-        <DebugType>none</DebugType>
-        <DefineConstants>R21</DefineConstants>
+    <PropertyGroup Condition="$(Configuration.Contains('R20'))">
+        <RevitVersion>2020</RevitVersion>
+        <DefineConstants>$(DefineConstants);R20</DefineConstants>
     </PropertyGroup>
-    <PropertyGroup Condition=" '$(Configuration)' == 'Release R22' ">
-        <Optimize>true</Optimize>
-        <DebugType>none</DebugType>
-        <DefineConstants>R22</DefineConstants>
+    <PropertyGroup Condition="$(Configuration.Contains('R21'))">
+        <RevitVersion>2021</RevitVersion>
+        <DefineConstants>$(DefineConstants);R21</DefineConstants>
     </PropertyGroup>
-
-    <Choose>
-        <When Condition="$(Configuration.Contains('R19'))">
-            <PropertyGroup>
-                <RevitVersion>2019</RevitVersion>
-            </PropertyGroup>
-        </When>
-        <When Condition="$(Configuration.Contains('R20'))">
-            <PropertyGroup>
-                <RevitVersion>2020</RevitVersion>
-            </PropertyGroup>
-        </When>
-        <When Condition="$(Configuration.Contains('R21'))">
-            <PropertyGroup>
-                <RevitVersion>2021</RevitVersion>
-            </PropertyGroup>
-        </When>
-        <When Condition="$(Configuration.Contains('R22'))">
-            <PropertyGroup>
-                <RevitVersion>2022</RevitVersion>
-            </PropertyGroup>
-        </When>
-    </Choose>
+    <PropertyGroup Condition="$(Configuration.Contains('R22'))">
+        <RevitVersion>2022</RevitVersion>
+        <DefineConstants>$(DefineConstants);R22</DefineConstants>
+    </PropertyGroup>
+    <PropertyGroup Condition="$(Configuration.Contains('R23'))">
+        <RevitVersion>2023</RevitVersion>
+        <DefineConstants>$(DefineConstants);R23</DefineConstants>
+    </PropertyGroup>
+    <PropertyGroup>
+        <Version>$(RevitVersion)</Version>
+        <GenerateAssemblyInfo>true</GenerateAssemblyInfo>
+        <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+    </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="JetBrains.Annotations">
-            <Version>2021.2.0</Version>
-        </PackageReference>
-        <PackageReference Include="Revit_API_x64" Version="$(RevitVersion).0.0"/>
-        <PackageReference Include="Microsoft-WindowsAPICodePack-Shell" Version="1.1.4"/>
+        <PackageReference Include="JetBrains.Annotations" Version="2021.2.0" />
+        <PackageReference Include="Nice3point.Revit.Api.RevitAPI" Version="$(RevitVersion).*" />
+        <PackageReference Include="Nice3point.Revit.Api.RevitAPIUI" Version="$(RevitVersion).*" />
+        <PackageReference Include="Microsoft-WindowsAPICodePack-Shell" Version="1.1.4" />
     </ItemGroup>
 
     <ItemGroup>
-        <Resource Include="Resources\Icons\RibbonIcon16.png"/>
-        <Resource Include="Resources\Icons\RibbonIcon32.png"/>
+        <Using Include="JetBrains.Annotations" />
     </ItemGroup>
 
     <ItemGroup>
-        <None Update="FamilyUpdater.addin">
-            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-        </None>
+        <Folder Include="Core" />
     </ItemGroup>
 
-
-    <ItemGroup>
-        <AddinItem Include="$(TargetDir)$(AssemblyName).dll"/>
-        <AddinItem Include="$(TargetDir)Microsoft.WindowsAPICodePack.dll"/>
-        <AddinItem Include="$(TargetDir)Microsoft.WindowsAPICodePack.Shell.dll"/>
-        <!--Files to copy to Revit add-ins folder-->
-        <!--<AddinItem Include="$(TargetDir)Simple.dll" />-->
-    </ItemGroup>
-
-    <Target Name="AfterBuildTarget" AfterTargets="CoreBuild">
-        <PropertyGroup>
-            <AddinDir>bin\AddIn $(RevitVersion) $(Configuration)\</AddinDir>
-            <AddinFilesDir>$(AddinDir)$(AssemblyName)\</AddinFilesDir>
-        </PropertyGroup>
-
-        <Copy SourceFiles="$(TargetDir)$(AssemblyName).addin" DestinationFolder="$(AddinDir)"/>
-        <Copy SourceFiles="@(AddinItem)" DestinationFolder="$(AddinFilesDir)"/>
-
+    <Target Name="CopyFiles" AfterTargets="CoreBuild">
         <ItemGroup>
-            <AddinFiles Include="$(AddinDir)**\*.*"/>
+            <RootItem Include="$(ProjectDir)*.addin" />
+            <AddinItem Include="$(TargetDir)$(AssemblyName).*" />
+            <!--Files to copy to Revit add-ins folder-->
+            <AddinItem Include="$(TargetDir)Microsoft.WindowsAPICodePack.*" />
         </ItemGroup>
 
-        <Copy SourceFiles="@(AddinFiles)" DestinationFolder="$(AppData)\Autodesk\Revit\Addins\$(RevitVersion)\%(RecursiveDir)" Condition="$(Configuration.Contains('Debug'))"/>
+        <PropertyGroup>
+            <RootDir>bin\AddIn $(RevitVersion) $(Configuration)\</RootDir>
+            <AddinDir>$(RootDir)$(AssemblyName)\</AddinDir>
+        </PropertyGroup>
+
+        <Copy SourceFiles="@(RootItem)" DestinationFolder="$(RootDir)" />
+        <Copy SourceFiles="@(AddinItem)" DestinationFolder="$(AddinDir)" />
+
+        <ItemGroup>
+            <AddinFiles Include="$(RootDir)**\*.*" />
+        </ItemGroup>
+
+        <Copy SourceFiles="@(AddinFiles)" DestinationFolder="$(AppData)\Autodesk\Revit\Addins\$(RevitVersion)\%(RecursiveDir)" Condition="$(Configuration.Contains('Debug'))" />
     </Target>
 </Project>
