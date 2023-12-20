@@ -1,21 +1,26 @@
-﻿using Nuke.Common;
-using Nuke.Common.IO;
-using Nuke.Common.Utilities.Collections;
-using static Nuke.Common.IO.FileSystemTasks;
+﻿using Nuke.Common.Tools.DotNet;
+using static Nuke.Common.Tools.DotNet.DotNetTasks;
 
-partial class Build
+sealed partial class Build
 {
-    Target Cleaning => _ => _
+    Target Clean => _ => _
+        .OnlyWhenStatic(() => IsLocalBuild)
         .Executes(() =>
         {
-            EnsureCleanDirectory(ArtifactsDirectory);
+            foreach (var configuration in GlobBuildConfigurations())
+                DotNetClean(settings => settings
+                    .SetConfiguration(configuration)
+                    .SetVerbosity(DotNetVerbosity.Minimal));
 
-            if (IsServerBuild) return;
-            foreach (var projectName in Projects)
-            {
-                var project = BuilderExtensions.GetProject(Solution, projectName);
-                var binDirectory = (AbsolutePath) new DirectoryInfo(project.GetBinDirectory()).FullName;
-                binDirectory.GlobDirectories($"{AddInBinPrefix}*", "Release*").ForEach(DeleteDirectory);
-            }
+            foreach (var project in Solution.AllProjects.Where(project => project != Solution.Build))
+                CleanDirectory(project.Directory / "bin");
+
+            CleanDirectory(ArtifactsDirectory);
         });
+
+    static void CleanDirectory(AbsolutePath path)
+    {
+        Log.Information("Cleaning directory: {Directory}", path);
+        path.CreateOrCleanDirectory();
+    }
 }

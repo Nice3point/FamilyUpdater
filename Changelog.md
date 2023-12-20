@@ -5,3 +5,4 @@
 - **1.0.2:** Fixed a bug with closing a document
 - **1.0.3:** Removed duplicate update
 - **2.0.0:** Revit 2023 support
+- **3.0.0:** Revit 2024 support

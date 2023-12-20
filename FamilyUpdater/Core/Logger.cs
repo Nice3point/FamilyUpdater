@@ -1,31 +1,21 @@
-﻿using System.IO;
-
-namespace FamilyUpdater.Core;
+﻿namespace FamilyUpdater.Core;
 
 public class Logger
 {
-    private const string LogFileName = "Revit-FamilyUpdater.log";
+    private const string FileName = "Revit-FamilyUpdater.log";
 
     public Logger()
     {
-        var logFolder = Path.GetTempPath();
-        LogPath = Path.Combine(logFolder, LogFileName);
-        DeleteLog();
+        LogPath = Path.Combine(Path.GetTempPath(), FileName);
+        if (File.Exists(LogPath)) File.Delete(LogPath);
     }
 
     public string LogPath { get; }
-    public bool HaveLogData { get; private set; }
-    public int RecordNumbers { get; private set; }
+    public int Records { get; private set; }
 
     public void AppendText(string text)
     {
-        HaveLogData = true;
-        RecordNumbers++;
+        Records++;
         File.AppendAllText(LogPath, text);
-    }
-
-    private void DeleteLog()
-    {
-        if (File.Exists(LogPath)) File.Delete(LogPath);
     }
 }

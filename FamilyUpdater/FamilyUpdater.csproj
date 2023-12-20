@@ -1,23 +1,26 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
+
     <PropertyGroup>
-        <UseWPF>true</UseWPF>
         <LangVersion>latest</LangVersion>
         <PlatformTarget>x64</PlatformTarget>
         <ImplicitUsings>true</ImplicitUsings>
         <TargetFramework>net48</TargetFramework>
-        <Configurations>Debug R19;Debug R20;Debug R21;Debug R22;Debug R23</Configurations>
-        <Configurations>$(Configurations);Release R19;Release R20;Release R21;Release R22;Release R23</Configurations>
+        <Configurations>Debug R19;Debug R20;Debug R21;Debug R22;Debug R23;Debug R24</Configurations>
+        <Configurations>$(Configurations);Release R19;Release R20;Release R21;Release R22;Release R23;Release R24</Configurations>
     </PropertyGroup>
+
     <PropertyGroup Condition="$(Configuration.Contains('Debug'))">
-        <DebugSymbols>true</DebugSymbols>
         <DebugType>full</DebugType>
+        <DebugSymbols>true</DebugSymbols>
         <DefineConstants>$(DefineConstants);DEBUG</DefineConstants>
     </PropertyGroup>
+
     <PropertyGroup Condition="$(Configuration.Contains('Release'))">
         <Optimize>true</Optimize>
         <DebugType>none</DebugType>
         <DefineConstants>$(DefineConstants);RELEASE</DefineConstants>
     </PropertyGroup>
+
     <PropertyGroup Condition="$(Configuration.Contains('R19'))">
         <RevitVersion>2019</RevitVersion>
         <DefineConstants>$(DefineConstants);R19</DefineConstants>
@@ -38,47 +41,65 @@
         <RevitVersion>2023</RevitVersion>
         <DefineConstants>$(DefineConstants);R23</DefineConstants>
     </PropertyGroup>
+    <PropertyGroup Condition="$(Configuration.Contains('R24'))">
+        <RevitVersion>2024</RevitVersion>
+        <DefineConstants>$(DefineConstants);R24</DefineConstants>
+    </PropertyGroup>
+
     <PropertyGroup>
-        <Version>$(RevitVersion)</Version>
         <GenerateAssemblyInfo>true</GenerateAssemblyInfo>
+        <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
         <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+        <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+        <GenerateBindingRedirectsOutputType>true</GenerateBindingRedirectsOutputType>
+    </PropertyGroup>
+
+    <PropertyGroup>
+        <StartAction>Program</StartAction>
+        <StartProgram>C:\Program Files\Autodesk\Revit $(RevitVersion)\Revit.exe</StartProgram>
+        <StartArguments>/language ENG</StartArguments>
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="JetBrains.Annotations" Version="2021.2.0" />
+        <PackageReference Include="JetBrains.Annotations" Version="2023.*" />
         <PackageReference Include="Nice3point.Revit.Api.RevitAPI" Version="$(RevitVersion).*" />
         <PackageReference Include="Nice3point.Revit.Api.RevitAPIUI" Version="$(RevitVersion).*" />
-        <PackageReference Include="Microsoft-WindowsAPICodePack-Shell" Version="1.1.4" />
+        <PackageReference Include="Microsoft-WindowsAPICodePack-Shell" Version="1.*" />
     </ItemGroup>
 
     <ItemGroup>
         <Using Include="JetBrains.Annotations" />
     </ItemGroup>
 
-    <ItemGroup>
-        <Folder Include="Core" />
-    </ItemGroup>
-
     <Target Name="CopyFiles" AfterTargets="CoreBuild">
         <ItemGroup>
-            <RootItem Include="$(ProjectDir)*.addin" />
-            <AddinItem Include="$(TargetDir)$(AssemblyName).*" />
-            <!--Files to copy to Revit add-ins folder-->
-            <AddinItem Include="$(TargetDir)Microsoft.WindowsAPICodePack.*" />
+            <RootItem Include="$(ProjectDir)*.addin"/>
+            <AddinItem Include="$(TargetDir)**\*"/>
         </ItemGroup>
 
         <PropertyGroup>
-            <RootDir>bin\AddIn $(RevitVersion) $(Configuration)\</RootDir>
-            <AddinDir>$(RootDir)$(AssemblyName)\</AddinDir>
+            <RootDir>bin\$(RevitVersion) $(Configuration)\</RootDir>
+            <AddinDir>$(RootDir)$(SolutionName)\</AddinDir>
         </PropertyGroup>
 
-        <Copy SourceFiles="@(RootItem)" DestinationFolder="$(RootDir)" />
-        <Copy SourceFiles="@(AddinItem)" DestinationFolder="$(AddinDir)" />
+        <Copy SourceFiles="@(RootItem)" DestinationFolder="$(RootDir)"/>
+        <Copy SourceFiles="@(AddinItem)" DestinationFolder="$(AddinDir)\%(RecursiveDir)"/>
 
         <ItemGroup>
-            <AddinFiles Include="$(RootDir)**\*.*" />
+            <AddinFiles Include="$(RootDir)**\*"/>
         </ItemGroup>
 
-        <Copy SourceFiles="@(AddinFiles)" DestinationFolder="$(AppData)\Autodesk\Revit\Addins\$(RevitVersion)\%(RecursiveDir)" Condition="$(Configuration.Contains('Debug'))" />
+        <Copy SourceFiles="@(AddinFiles)"
+              DestinationFolder="$(AppData)\Autodesk\Revit\Addins\$(RevitVersion)\%(RecursiveDir)"/>
     </Target>
+
+    <Target Name="DeleteFiles" AfterTargets="Clean">
+        <ItemGroup>
+            <RootItem Include="$(AppData)\Autodesk\Revit\Addins\$(RevitVersion)\$(SolutionName)*"/>
+        </ItemGroup>
+
+        <RemoveDir Directories="$(AppData)\Autodesk\Revit\Addins\$(RevitVersion)\$(SolutionName)"/>
+        <Delete Files="@(RootItem)"/>
+    </Target>
+
 </Project>

@@ -1,6 +1,4 @@
-﻿using System.IO;
-
-namespace FamilyUpdater.Core;
+﻿namespace FamilyUpdater.Core;
 
 public static class FileFormats
 {
@@ -15,7 +13,8 @@ public static class FileFormats
     public static List<string> GetFilteredFiles(this string folder, SearchOption searchOption)
     {
         return Directory.EnumerateFiles(folder, "*.*", searchOption)
-            .Where(file => file.EndsWith(StringComparison.OrdinalIgnoreCase, Formats)).ToList();
+            .Where(file => file.EndsWith(StringComparison.OrdinalIgnoreCase, Formats))
+            .ToList();
     }
 
     private static bool EndsWith(this string value, StringComparison comparison, IEnumerable<string> values)

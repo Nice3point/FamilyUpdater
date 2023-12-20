@@ -3,9 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.0.31919.166
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{5D055D72-2C33-4A76-ABFD-017C62C4E274}") = "Build", "Build\Build.csproj", "{DC00C4B4-2EDB-4530-AED9-424EECD5321C}"
+Project("{5D055D72-2C33-4A76-ABFD-017C62C4E274}") = "Build", "build\Build.csproj", "{DC00C4B4-2EDB-4530-AED9-424EECD5321C}"
 EndProject
-Project("{5D055D72-2C33-4A76-ABFD-017C62C4E274}") = "Installer", "Installer\Installer.csproj", "{D7FF9DEA-E738-49B5-889E-0038B0C9C5F2}"
+Project("{5D055D72-2C33-4A76-ABFD-017C62C4E274}") = "Installer", "install\Installer.csproj", "{D7FF9DEA-E738-49B5-889E-0038B0C9C5F2}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{5BA04D9C-967C-4080-BC9F-74B0924A807A}"
 	ProjectSection(SolutionItems) = preProject
@@ -23,11 +23,13 @@ Global
 		Debug R21|Any CPU = Debug R21|Any CPU
 		Debug R22|Any CPU = Debug R22|Any CPU
 		Debug R23|Any CPU = Debug R23|Any CPU
+		Debug R24|Any CPU = Debug R24|Any CPU
 		Release R19|Any CPU = Release R19|Any CPU
 		Release R20|Any CPU = Release R20|Any CPU
 		Release R21|Any CPU = Release R21|Any CPU
 		Release R22|Any CPU = Release R22|Any CPU
 		Release R23|Any CPU = Release R23|Any CPU
+		Release R24|Any CPU = Release R24|Any CPU
 		Installer|Any CPU = Installer|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
@@ -42,6 +44,8 @@ Global
 		{DC00C4B4-2EDB-4530-AED9-424EECD5321C}.Release R22|Any CPU.ActiveCfg = Release|Any CPU
 		{DC00C4B4-2EDB-4530-AED9-424EECD5321C}.Release R23|Any CPU.ActiveCfg = Release|Any CPU
 		{DC00C4B4-2EDB-4530-AED9-424EECD5321C}.Installer|Any CPU.ActiveCfg = Release|Any CPU
+		{DC00C4B4-2EDB-4530-AED9-424EECD5321C}.Debug R24|Any CPU.ActiveCfg = Debug|Any CPU
+		{DC00C4B4-2EDB-4530-AED9-424EECD5321C}.Release R24|Any CPU.ActiveCfg = Release|Any CPU
 		{D7FF9DEA-E738-49B5-889E-0038B0C9C5F2}.Debug R19|Any CPU.ActiveCfg = Debug|Any CPU
 		{D7FF9DEA-E738-49B5-889E-0038B0C9C5F2}.Debug R20|Any CPU.ActiveCfg = Debug|Any CPU
 		{D7FF9DEA-E738-49B5-889E-0038B0C9C5F2}.Debug R21|Any CPU.ActiveCfg = Debug|Any CPU
@@ -54,6 +58,8 @@ Global
 		{D7FF9DEA-E738-49B5-889E-0038B0C9C5F2}.Release R23|Any CPU.ActiveCfg = Release|Any CPU
 		{D7FF9DEA-E738-49B5-889E-0038B0C9C5F2}.Installer|Any CPU.ActiveCfg = Release|Any CPU
 		{D7FF9DEA-E738-49B5-889E-0038B0C9C5F2}.Installer|Any CPU.Build.0 = Release|Any CPU
+		{D7FF9DEA-E738-49B5-889E-0038B0C9C5F2}.Debug R24|Any CPU.ActiveCfg = Debug|Any CPU
+		{D7FF9DEA-E738-49B5-889E-0038B0C9C5F2}.Release R24|Any CPU.ActiveCfg = Release|Any CPU
 		{14C73F80-4A98-4626-9AFF-7A74F3FB748B}.Debug R19|Any CPU.ActiveCfg = Debug R19|Any CPU
 		{14C73F80-4A98-4626-9AFF-7A74F3FB748B}.Debug R19|Any CPU.Build.0 = Debug R19|Any CPU
 		{14C73F80-4A98-4626-9AFF-7A74F3FB748B}.Debug R20|Any CPU.ActiveCfg = Debug R20|Any CPU
@@ -74,7 +80,10 @@ Global
 		{14C73F80-4A98-4626-9AFF-7A74F3FB748B}.Release R22|Any CPU.Build.0 = Release R22|Any CPU
 		{14C73F80-4A98-4626-9AFF-7A74F3FB748B}.Release R23|Any CPU.ActiveCfg = Release R23|Any CPU
 		{14C73F80-4A98-4626-9AFF-7A74F3FB748B}.Release R23|Any CPU.Build.0 = Release R23|Any CPU
-		{14C73F80-4A98-4626-9AFF-7A74F3FB748B}.Installer|Any CPU.ActiveCfg = Debug R19|Any CPU
-		{14C73F80-4A98-4626-9AFF-7A74F3FB748B}.Installer|Any CPU.Build.0 = Debug R19|Any CPU
+		{14C73F80-4A98-4626-9AFF-7A74F3FB748B}.Debug R24|Any CPU.ActiveCfg = Debug R24|Any CPU
+		{14C73F80-4A98-4626-9AFF-7A74F3FB748B}.Debug R24|Any CPU.Build.0 = Debug R24|Any CPU
+		{14C73F80-4A98-4626-9AFF-7A74F3FB748B}.Installer|Any CPU.ActiveCfg = Release R24|Any CPU
+		{14C73F80-4A98-4626-9AFF-7A74F3FB748B}.Release R24|Any CPU.ActiveCfg = Release R24|Any CPU
+		{14C73F80-4A98-4626-9AFF-7A74F3FB748B}.Release R24|Any CPU.Build.0 = Release R24|Any CPU
 	EndGlobalSection
 EndGlobal
