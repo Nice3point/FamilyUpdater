@@ -1,5 +1,6 @@
 using System.Text;
 using Nuke.Common.Git;
+using Nuke.Common.Tooling;
 using Nuke.Common.Tools.Git;
 using Nuke.Common.Tools.GitHub;
 using Octokit;
@@ -39,7 +40,7 @@ sealed partial class Build
 
     static void Validate()
     {
-        var tags = GitTasks.Git("tag --list");
+        var tags = GitTasks.Git("tag --list", logger:(_, _) => {});
         Assert.False(tags.Any(tag => tag.Text == Version), $"A Release with the specified tag already exists in the repository: {Version}");
 
         Log.Information("Version: {Version}", Version);
@@ -68,7 +69,8 @@ sealed partial class Build
 
     void WriteCompareUrl(string version, StringBuilder changelog)
     {
-        var tags = GitTasks.Git("tag --list");
+        var tags = GitTasks.Git("tag --list", logger:(_, _) => {});
+        if (tags.Count == 0) return;
 
         changelog.Append("Full changelog: ");
         changelog.Append(GitRepository.GetGitHubCompareTagsUrl(version, tags.Last().Text));
