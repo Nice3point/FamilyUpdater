@@ -16,13 +16,13 @@ var project = new Project
     UI = WUI.WixUI_FeatureTree,
     MajorUpgrade = MajorUpgrade.Default,
     GUID = new Guid("5D6DF82F-27CE-4DDC-A6BC-613DCD375485"),
-    BannerImage = @"Installer\Resources\Icons\BannerImage.png",
-    BackgroundImage = @"Installer\Resources\Icons\BackgroundImage.png",
+    BannerImage = @"install\Resources\Icons\BannerImage.png",
+    BackgroundImage = @"install\Resources\Icons\BackgroundImage.png",
     Version = Assembly.GetExecutingAssembly().GetName().Version.ClearRevision(),
     ControlPanelInfo =
     {
         Manufacturer = "Nice3point",
-        ProductIcon = @"Installer\Resources\Icons\ShellIcon.ico"
+        ProductIcon = @"install\Resources\Icons\ShellIcon.ico"
     }
 };
 
