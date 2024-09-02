@@ -1,5 +1,9 @@
 # Changelog
 
+# 4.0.0
+
+Revit 2025 support
+
 # 3.0.0
 
 Revit 2024 support
