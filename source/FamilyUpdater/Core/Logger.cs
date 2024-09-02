@@ -1,8 +1,10 @@
-﻿namespace FamilyUpdater.Core;
+﻿using System.IO;
 
-public class Logger
+namespace FamilyUpdater.Core;
+
+public sealed class Logger
 {
-    private const string FileName = "Revit-FamilyUpdater.log";
+    private const string FileName = "FamilyUpdater.log";
 
     public Logger()
     {
