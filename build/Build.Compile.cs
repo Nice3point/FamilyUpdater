@@ -12,7 +12,7 @@ sealed partial class Build
                 DotNetBuild(settings => settings
                     .SetConfiguration(configuration)
                     .SetVersion(Version)
-                    .SetVerbosity(DotNetVerbosity.Minimal));
+                    .SetVerbosity(DotNetVerbosity.minimal));
         });
 
     List<string> GlobBuildConfigurations()
@@ -24,7 +24,6 @@ sealed partial class Build
             .ToList();
 
         Assert.NotEmpty(configurations, $"No solution configurations have been found. Pattern: {string.Join(" | ", Configurations)}");
-
         return configurations;
     }
 }

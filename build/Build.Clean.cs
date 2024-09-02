@@ -7,15 +7,18 @@ sealed partial class Build
         .OnlyWhenStatic(() => IsLocalBuild)
         .Executes(() =>
         {
+            CleanDirectory(ArtifactsDirectory);
+            foreach (var project in Solution.AllProjects.Where(project => project != Solution.Build))
+            {
+                CleanDirectory(project.Directory / "bin");
+                CleanDirectory(project.Directory / "obj");
+            }
+
             foreach (var configuration in GlobBuildConfigurations())
                 DotNetClean(settings => settings
                     .SetConfiguration(configuration)
-                    .SetVerbosity(DotNetVerbosity.Minimal));
-
-            foreach (var project in Solution.AllProjects.Where(project => project != Solution.Build))
-                CleanDirectory(project.Directory / "bin");
-
-            CleanDirectory(ArtifactsDirectory);
+                    .SetVerbosity(DotNetVerbosity.minimal)
+                    .EnableNoLogo());
         });
 
     static void CleanDirectory(AbsolutePath path)

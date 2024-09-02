@@ -1,8 +1,7 @@
-using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using Nuke.Common.Git;
+using Nuke.Common.Tooling;
 using Nuke.Common.Utilities;
-using Serilog.Events;
 
 sealed partial class Build
 {
@@ -16,50 +15,41 @@ sealed partial class Build
                 Log.Information("Project: {Name}", project.Name);
 
                 var exePattern = $"*{installer.Name}.exe";
-                var exeFile = Directory.EnumerateFiles(installer.Directory, exePattern, SearchOption.AllDirectories).FirstOrDefault();
-                if (exeFile is null) throw new Exception($"No installer file was found for the project: {installer.Name}");
+                var exeFile = Directory.EnumerateFiles(installer.Directory, exePattern, SearchOption.AllDirectories)
+                    .FirstOrDefault()
+                    .NotNull($"No installer file was found for the project: {installer.Name}");
 
                 var directories = Directory.GetDirectories(project.Directory, "* Release *", SearchOption.AllDirectories);
-                if (directories.Length == 0) throw new Exception("No files were found to create an installer");
+                Assert.NotEmpty(directories, "No files were found to create an installer");
 
-                var proc = new Process();
-                proc.StartInfo.FileName = exeFile;
-                proc.StartInfo.Arguments = directories.Select(path => path.DoubleQuoteIfNeeded()).JoinSpace();
-                proc.StartInfo.RedirectStandardOutput = true;
-                proc.StartInfo.RedirectStandardError = true;
-                proc.Start();
-
-                RedirectStream(proc.StandardOutput, LogEventLevel.Information);
-                RedirectStream(proc.StandardError, LogEventLevel.Error);
-
-                proc.WaitForExit();
-                if (proc.ExitCode != 0) throw new Exception($"The installer creation failed with ExitCode {proc.ExitCode}");
+                var arguments = directories.Select(path => path.DoubleQuoteIfNeeded()).JoinSpace();
+                var process = ProcessTasks.StartProcess(exeFile, arguments, logInvocation: false, logger: InstallLogger);
+                process.AssertZeroExitCode();
             }
         });
 
     [SuppressMessage("ReSharper", "TemplateIsNotCompileTimeConstantProblem")]
-    void RedirectStream(StreamReader reader, LogEventLevel eventLevel)
+    void InstallLogger(OutputType outputType, string output)
     {
-        while (!reader.EndOfStream)
+        if (outputType == OutputType.Err)
         {
-            var value = reader.ReadLine();
-            if (value is null) continue;
-
-            var matches = ArgumentsRegex.Matches(value);
-            if (matches.Count > 0)
-            {
-                var parameters = matches
-                    .Select(match => match.Value.Substring(1, match.Value.Length - 2))
-                    .Cast<object>()
-                    .ToArray();
-
-                var line = ArgumentsRegex.Replace(value, match => $"{{Parameter{match.Index}}}");
-                Log.Write(eventLevel, line, parameters);
-            }
-            else
-            {
-                Log.Debug(value);
-            }
+            Log.Error(output);
+            return;
         }
+
+        var arguments = ArgumentsRegex.Matches(output);
+        if (arguments.Count == 0)
+        {
+            Log.Debug(output);
+            return;
+        }
+
+        var properties = arguments
+            .Select(match => match.Value.Substring(1, match.Value.Length - 2))
+            .Cast<object>()
+            .ToArray();
+
+        var messageTemplate = ArgumentsRegex.Replace(output, match => $"{{Property{match.Index}}}");
+        Log.Information(messageTemplate, properties);
     }
 }

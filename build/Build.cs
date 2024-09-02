@@ -6,9 +6,9 @@ sealed partial class Build : NukeBuild
     string[] Configurations;
     Dictionary<Project, Project> InstallersMap;
 
-    [Parameter] [Secret] string GitHubToken;
+    [Secret] [Parameter] string GitHubToken;
     [GitRepository] readonly GitRepository GitRepository;
     [Solution(GenerateProjects = true)] Solution Solution;
 
-    public static int Main() => Execute<Build>(x => x.CreateInstaller);
+    public static int Main() => Execute<Build>(x => x.Compile);
 }

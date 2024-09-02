@@ -5,16 +5,14 @@
         <NoWarn>CS0649;CS0169</NoWarn>
         <LangVersion>latest</LangVersion>
         <ImplicitUsings>true</ImplicitUsings>
-        <TargetFramework>net7.0</TargetFramework>
+        <TargetFramework>net8.0</TargetFramework>
         <NukeRootDirectory>..</NukeRootDirectory>
         <NukeScriptDirectory>..</NukeScriptDirectory>
         <NukeTelemetryVersion>1</NukeTelemetryVersion>
-        <RootNamespace>Build</RootNamespace>
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="Nuke.Common" Version="7.0.6"/>
-        <PackageReference Include="Dropbox.Api" Version="6.37.0"/>
+        <PackageReference Include="Nuke.Common" Version="8.0.0"/>
     </ItemGroup>
 
     <ItemGroup>
