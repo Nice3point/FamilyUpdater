@@ -1,7 +1,8 @@
 # FamilyUpdater
 
 **FamilyUpdater** is a Revit plugin designed to streamline the process of updating Revit model files to the current version of Revit. 
-Whether you're dealing with project files, family files, templates, or family templates, this tool ensures that your files are compatible with the latest Revit release, saving you time and effort in manual upgrades.
+
+Whether you're dealing with project files, family files, templates, or family templates, this tool ensures that your files will be compatible with your Revit version, saving you time and effort in manual upgrades.
 
 ## Features
 
@@ -31,6 +32,6 @@ Once installed, using the FamilyUpdater is simple:
 - Select **Family Updater** from the list.
 - The plugin will automatically upgrade the loaded file to the current version of Revit.
 
-Requirements
+## Requirements
 
 - Revit Version: The plugin is compatible with Revit 2020 and later.
